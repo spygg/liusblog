@@ -1,0 +1,23 @@
+
+body{
+	padding-top: 50px;
+	
+}
+
+.main-header{
+	height: 100px;
+	width: 100%;
+	background-image: url(../img/header.jpg);
+}
+
+.main-header {
+	height: 300px;
+	width: 100%;
+}
+
+#footer{
+	background-color: #000;
+	padding-top: 10px;
+	padding-bottom: 20px;
+}
+

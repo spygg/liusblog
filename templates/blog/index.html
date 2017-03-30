@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>test</title>
-</head>
-<body>
+
+{% extends 'base.html' %}
+
+{%block title%}LiusBlog {% endblock %}
+
+{% block content %}
+
 	<a href="{% url "blog:edit" '0' %}">new</a>
 	{% for article in articles %}
 		<h1>
@@ -16,5 +17,5 @@
 		<hr>
 	{% endfor %}
 
-</body>
-</html>
+{% endblock%}
+
