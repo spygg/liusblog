@@ -1,38 +1,145 @@
 <!DOCTYPE html>
-
-{% load static %}
-
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title> {%block title%} 测试 {% endblock %} </title>
+    <title>
+          {% block title %}{% endblock %}
+    </title>
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    {% block css%}
+    {% endblock %}
+    
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/js/base.js"></script>
+    
+    {% block js %}
+    
+    {% endblock %}
+</head>
+<body>
+    <!-- 导航栏开始 -->
+    <div id="nav-area" class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
 
-    <link href="{%static  'css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+             </button>
 
-    <!--[if lt IE 9]>
-      <script src="../static/js/html5shiv.min.js"></script>
-      <script src="../static/js/respond.min.js"></script>
-    <![endif]-->
-  </head>
+          <div class="navbar-brand">
+            <a href="index.html">
+              <span>LiusBlog</span>
+            </a>
+          </div>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">{# <span class="glyphicon glyphicon-home"></span> #}首页</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Qt<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">QML</a></li>
+                
+                <li role="separator" class="divider"></li>
+                <li><a href="#">QWidget</a></li>
+              </ul>
+            </li>
 
-  <body>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Python<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+       
+                <li><a href="#">Django</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">爬虫</a></li>
+                <li><a href="#">PyQt</a></li>
+              </ul>
+            </li>
 
-    <div id="main-area"> 
-    	{% include "./blog/include/nav.html"%}
+            <li><a href="">Html</a></li>
+            <li><a href="">杂谈</a></li>
+            <li><a href="about.html">关于</a></li>
+          </ul>
+          
+          <!-- 右侧按钮 -->
+          <div class="pull-right">
+            <ul class="nav navbar-nav navbar-left">
+              <form class="hidden-sm  nav-item navbar-form" role="search" method="get" id="searchform" action="/search/">
+                  <div class="input-group">
+                      <input type="search" name="q" class="form-control rounded-0 f-15" placeholder="搜索" required=True>
+                      <div class="input-group-btn">
+                          <button class="btn btn-info rounded-0" type="submit"><i class="fa fa-search"></i></button>
+                      </div>
+                  </div>
+              </form>
+              
+              <div class="nav-new-article">
+                <a href="">
+                  <i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i>
+                  <span>新文章</span>
+                </a>
+              </div>
+            </ul>
 
-    	<div id="body-area" class="container">
-    		{% block mainarea %}{% endblock %}	
-    	</div>
-	  	
-	  	{% include "./blog/include/footer.html"%}
-  	</div> 
+            <ul class="nav navbar-nav">
+              <li>
+                  <a href="#">登录</a>
+              </li>
+              <li>
+                  <a href="#">注册</a>
+              </li>
+            </ul>
+          </div>
+          <!-- 右侧按钮结束 -->
+          
+        </div>
+      </div>
+    </div>
+    <!-- 导航栏结束 -->
 
 
-    <script src="{%static 'js/jquery.min.js' %}"></script>
-    <script src="{%static 'js/bootstrap.min.js' %}"></script>
-  </body>
+    <!-- 主内容区 -->
+    <div id="main-area" class="container">
+        <div class="row clearfix">
+            {% block bulletin %}
+            {% endblock %}
+            <!-- 左边区域 -->
+            <div id="left-area" class="col-xs-12 col-sm-8 col-md-9">
+                {% block left_area%}
+                {% endblock %}
+            </div>
+
+            <!-- 右边区域 -->
+            <div  id="right-area" class="hidden-xs col-sm-4 col-md-3">
+                {% block right_area%}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 网站脚注 -->
+    <div id="footer-area">
+      <div>
+          <span>Copyright © 2017-2018 spygg.</span>
+      </div>
+      <div>
+          <span>Base On</span> 
+          <a href="https://www.djangoproject.com" target="_blank">Django 2.0</a>
+          <a href="http://www.bootcss.com/" target="_blank">BootStrap 3+</a>
+      </div>
+
+    </div>
+    <!-- 网站脚注结束 -->
+</body>
 </html>

@@ -1,0 +1,62 @@
+.reward{
+    position: relative;
+}
+.reward-button{
+    margin: 0 auto;
+    position: relative;
+}
+
+
+/*打赏*/
+.sponsor{
+    /*position: relative;*/
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    text-align: center;
+/*    display: block; 
+    width: 10%;
+*/
+}
+
+.sponsor-qr-code img{
+    max-width: 100%;
+
+}
+
+.sponsor-qr-code p{
+    padding-top: 2px;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+#loginModal{
+    max-width: 80%;
+
+    margin: 0 auto;
+}
+.modal-header, .modal-footer, .modal-body{
+    padding:10px 15px 0px 15px
+}
+
+.modal-title img{
+    max-height: 30px;
+}
+
+.modal-header:hover .modal-title img{
+    transform: scale(3);
+}
+
+.modal-title{
+    font-size: 2em;
+}
+
+
+.popover-qr-code{
+    max-width: 120px;
+}
+
+.popover-qr-code:hover{
+    transform: scale(1.1);
+}

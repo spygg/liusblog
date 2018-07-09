@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/static/css/article_detail.css">
+{% endblock %}
+
+{% block js %}
+    
+{% endblock %}
+
+{% block left_area%}
+  <!-- 面包屑导航 -->
+          <div class="nav-path">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Django</a></li>
+                <li class="breadcrumb-item" class="active">Django的前端页面设计</li>
+            </ol>
+          </div>
+
+          <!-- 某一篇文章 -->
+          <div class="well article-area  article-area-article clearfix">
+        
+            <div class="article-info">
+              <div class="article-title">
+                
+                  <h1>
+                    {{ article.title }}
+                  </h1>
+               
+              </div>
+            </div>
+            <div class="article-status">
+              <span>2018年5月11日 14:36 </span>
+              <span>阅读 161 </span>
+
+              <span>
+                  <a href="#" target="#" title="查看文章评论">评论 7</a>
+              </span>
+              <span class="pull-right">
+                <a class = "modify_article" href="#" title="修改文章">
+                  修改
+                </a>
+              </span>
+            </div>
+            <div class="artile-detail">
+                {{ article.content|safe}}
+            </div>
+
+            <!-- 打赏 -->
+            <div class="sponsor">
+              <div class="sponsor-title">
+                <p>小礼物走一走，期待您的打赏哦!</p>
+              </div>
+              <div class="btn btn-danger sponsor-btn" data-target="#loginModal" data-toggle="modal">
+                <i class="fa fa-jpy" aria-hidden="true"></i>
+                <span>打赏</span>
+              </div>
+
+
+            </div>
+
+            <!-- modal -->
+            <div class="modal fade" id="loginModal" tabindex="-1" role="dialog"  aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                        <div class="modal-title">
+                          <span>
+                            求包养
+                          </span>
+                          <img src="/static/imgs/sponsor/mistressesme.gif">
+                        </div>
+
+                      </div>
+
+                      <div class="modal-body sponsor-qr-code clearfix">
+                        <div class="col-xs-6">
+                          <img src="/static/imgs/sponsor/weixincode.jpg" alt="">
+                          <p>微信赞助</p>
+                        </div>
+                        <div class="col-xs-6">
+                          <img src="/static/imgs/sponsor/zhifubaocode.jpg" alt="">
+                          <p>支付宝打赏</p>
+                        </div>
+                      </div>
+
+                      <div class="modal-footer">
+                        您的支持是我前行的动力!
+                      </div>
+                    </div>
+                </div>
+            </div>
+      
+
+            <!-- 打赏结束 -->
+          </div><!-- 某一篇文章结束 -->
+   
+{% endblock %}
+
+{% block right_area%}
+{% endblock %}
