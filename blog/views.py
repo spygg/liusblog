@@ -11,8 +11,14 @@ def home(request):
 
 
 def article_detail(request, id):
-    print('get %d' % id)
     content = {}
-    content['article'] = get_object_or_404(Blog, pk=id)
-    print(content['article'].title)
+    
+    blog = get_object_or_404(Blog, pk=id)
+    content['article'] = blog
+    content['prev_article'] = Blog.objects.filter(created_time__gt = blog.created_time).last()
+    content['next_article'] = Blog.objects.filter(created_time__lt = blog.created_time).first()
+    content['url'] = request.get_raw_uri()
+    # print(dir(request.META))
+    # print(request.META.values())
+    # print(request.get_raw_uri())
     return render(request, 'article_detail.html', content)

@@ -17,7 +17,10 @@ class Blog(models.Model):
     last_modify_time = models.DateTimeField(auto_now = True)
 
     def __str__(self):
-        return self.tilte
+        return self.title
 
+    def get_full_url(self):
+        return "http://1234.com"
+        
     class Meta:
         ordering = ['-created_time']
