@@ -40,56 +40,78 @@
     </div>
 {% endblock %}
 
-{% block left_area%}
-    {# 跑马灯区域 #}
-   <div class="carousel-area">
-    <div id="carousel-generic" class="carousel slide" data-ride="carousel">
-      <!-- Indicators -->
-      <ol class="carousel-indicators">
-        <li data-target="#carousel-generic" data-slide-to="0" class="active"></li>
-        <li data-target="#carousel-generic" data-slide-to="1"></li>
-        <li data-target="#carousel-generic" data-slide-to="2"></li>
-      </ol>
+{% block left_area %}
+  
 
-      <!-- Wrapper for slides -->
-      <div class="carousel-inner" role="listbox">
-        <div class="item active">
-          <img src="/static/imgs/bsblog.png">
-        </div>
-        <div class="item">
-          <img src="/static/imgs/jiandan.png">
-        </div>
-        <div class="item">
-          <img src="/static/imgs/virtualenv.png">
-          <div class="carousel-caption">
+  {# 当是文章分类时 #}
+  {% if blog_type %}
+    <!-- 面包屑导航 -->
+    <div class="nav-path">
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'article_list' %}?blog_type=all">全部文章</a></li>
+          <li class="breadcrumb-item"><a href="#">{{ type }}</a></li>
+      </ol>
+    </div>
+  {# 当是日期归档时 #}
+  {% elif month and year %}
+    <!-- 面包屑导航 -->
+    <div class="nav-path">
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'article_list' %}">全部文章</a></li>
+          <li class="breadcrumb-item"><a href=""> {{ year }} 年 {{ month}} 月 </a></li>
+      </ol>
+    </div>
+
+  {% else %}
+    {# 滚动图片区域 #}
+    <div class="carousel-area">
+      <div id="carousel-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#carousel-generic" data-slide-to="0" class="active"></li>
+          <li data-target="#carousel-generic" data-slide-to="1"></li>
+          <li data-target="#carousel-generic" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+          <div class="item active">
+            <img src="/static/imgs/bsblog.png">
+          </div>
+          <div class="item">
+            <img src="/static/imgs/jiandan.png">
+          </div>
+          <div class="item">
+            <img src="/static/imgs/virtualenv.png">
+            <div class="carousel-caption">
+            </div>
           </div>
         </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-generic" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-generic" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
       </div>
-
-      <!-- Controls -->
-      <a class="left carousel-control" href="#carousel-generic" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="right carousel-control" href="#carousel-generic" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a>
     </div>
-  </div>
-  <!-- 滚动图片区域结束 -->
-
+    <!-- 滚动图片区域结束 -->
+  {% endif %}
 
   {# 文章列表区域 #}
   <!-- 文章列表区域 -->
   <div class="article-list">
 
-    {% for article in article_list %}
+    {% for article in article_list.object_list  %}
         <!-- 某一篇文章 -->
         <div class="well article-area clearfix">
           <!-- 左边图片 -->
           <div class="col-md-5 article-img">
-            <a href="#">
+            <a href="{% url 'article_detail' article.id %}">
               <img src="https://dummyimage.com/600x400/333333/eeeeee&text=占位符">
             </a>
           </div>
@@ -99,8 +121,8 @@
                <div class="article-info">
                   <div class="article-tag">
                     <span class="article-tag-catinner">
-                      <a href="{% url 'article_detail' article.id %}" title="css3" target="_blank" class="classname">
-                        CSS3|Html5
+                      <a href="#" class="classname">
+                        {{article.blog_type}}
                       </a>
                     </span>
 
@@ -108,7 +130,7 @@
                     </span>
                   </div>
 
-                <a class="article-title" href="{% url 'article_detail' article.id %}">
+                <a class="article-title" href="{% url 'article_detail' article.id %}?blog_type={{ type }}">
                   <span>
                     {{ article.title }}
                   </span>
@@ -120,7 +142,7 @@
                 <!-- 文章正文简介 -->
                 <div class="ariticle-brief">
                  {# 摘要 #}
-                 {{ article.content|truncatechars:300 }}
+                 {{ article.content|striptags|truncatechars:150 }}
                 </div><!-- 文章正文简介结束 -->
 
                 <!-- 阅读等状态信息 -->
@@ -132,7 +154,7 @@
                   <span class="item ">
                     <i class="fa fa-calendar-times-o"></i>
                     {# 时间 #}
-                    ##
+                    {{ article.created_time|date:"Y-m-d" }}
                   </span>
                   <span class="item comment-num">
                     <a href="#" target="_blank" title="查看文章评论">
@@ -151,6 +173,75 @@
           </div><!-- 右边文章结束 -->
         </div><!-- 某一篇文章结束 -->
     {% endfor %}
+
+
+    {# 分页页码开始 #}
+    <nav id="pagination" aria-label="Page navigation">
+      <ul class="pagination">
+        
+        <!--上一页-->
+        {% if article_list.has_previous %}
+          <li>
+            {% if page_type == 'type_page' %}
+              <a href="{% url 'page_type' type   article_list.previous_page_number %}" aria-label="Previous">
+            {% elif page_type == 'type_date' %}
+              <a href="{% url 'page_date'  year month article_list.previous_page_number %}" aria-label="Previous">
+            {% elif page_type == 'type_index' %}
+              <a href="{% url 'page_index' article_list.previous_page_number %}" aria-label="Previous">
+            {% endif %}
+
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li>
+              <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&laquo;</span>
+          </li>
+        {% endif %}
+ 
+        <!--遍历显示每一个页码-->
+        {% for num in page_nums%}
+          {% if num == current_page %}
+            <li class="active">
+          {% else%}
+            <li>
+          {% endif %}
+              {% if blog_type %}
+                <a href="#">
+              {% elif month and year %}
+                <a href="#">
+              {% else %}
+                <a href="#">
+              {% endif %}
+
+              {{ num }}
+            </a>
+          </li>
+        {% endfor %}
+      
+        <!--下一页-->
+        {% if article_list.has_next %}
+          <li>
+            {% if page_type == 'type_page' %}
+              <a href="{% url 'page_type' type   article_list.next_page_number %}" aria-label="Next">
+            {% elif page_type == 'type_date' %}
+              <a href="{% url 'page_date'  year month article_list.next_page_number %}" aria-label="Next">
+            {% elif page_type == 'type_index' %}
+              <a href="{% url 'page_index' article_list.next_page_number %}" aria-label="Next">
+            {% endif %}
+
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+        {% else %}
+          <li>
+              <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&raquo;</span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {# 分页页码结束 #}
+  
   </div>
   {# 文章列表区域结束 #}
 
@@ -223,30 +314,15 @@
       </div>
 
       <ul class="list-group">
-        <li class="list-group-item">
-          <a href="#">C/C++</a>
-          <span class="badge">30篇</span>
-        </li>
-        <li class="list-group-item">
-          <a href="#">C/C++</a>
-          <span class="badge">30篇</span>
-        </li>
-        <li class="list-group-item">
-          <a href="#">Django</a>
-          <span class="badge">30篇</span>
-        </li>
-        <li class="list-group-item">
-          <a href="">QML</a>
-          <span class="badge">30篇</span>
-        </li>
-        <li class="list-group-item">
-          <a href="">QWidget</a>
-          <span class="badge">30篇</span>
-        </li>
-        <li class="list-group-item">
-          <a href="">随笔</a>
-          <span class="badge">30篇</span>
-        </li>
+
+        {% for blog_type in blog_types%}
+          <li class="list-group-item">
+            <a href="{% url 'article_list' %}?blog_type={{ blog_type }}"> {{ blog_type }} </a>
+            <span class="badge">{{ blog_type.blog_count }}篇</span>
+          </li>
+        {% endfor %}
+
+
       </ul>
 
       
@@ -267,18 +343,12 @@
         <span class="panel-heading-title">日期归档</span>
       </div>
       <ul class="list-group">
+        {% for blog_date, blog_count in blog_dates.items %}
           <li class="list-group-item">
-            <a href="#">2018-03</a>
+            <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}">{{ blog_date|date:"Y年m月" }} </a>
+            <span class="badge">{{ blog_count }}篇</span>
           </li>
-          <li class="list-group-item">
-            <a href="">2018-02</a>
-          </li>
-          <li class="list-group-item">
-            <a href="">2018-01</a>
-          </li>
-          <li class="list-group-item">
-            <a href="">2017-03</a>
-          </li>
+        {% endfor %}
       </ul>
       
       <div class="panel-footer show-more">

@@ -71,6 +71,17 @@ a:active{
     margin-top: 50px;
 }
 
+.breadcrumb{
+    background-color: #fff;
+}
+
+.pagination{
+    margin: 0px;
+}
+
+#pagination{
+    text-align: center;
+}
 
 #left-area,#right-area{
     
@@ -141,7 +152,7 @@ a:active{
 }
 
 .article-info{
-    border-bottom: 1px solid #ddd;
+    
     margin-bottom: 15px;
 
 }
@@ -184,8 +195,10 @@ a:active{
 
 
 div.article-status{
-    margin: 10px 0px 0px 10px;
+    margin: 10px 0px 25px 10px;
     color: #aaa;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
 }
 
 .article-status .item{

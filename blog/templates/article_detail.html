@@ -12,9 +12,9 @@
   <!-- 面包屑导航 -->
   <div class="nav-path">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">Django</a></li>
-        <li class="breadcrumb-item" class="active">Django的前端页面设计</li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="#">{{ article.blog_type }}</a></li>
+        <li class="breadcrumb-item" class="active"> {{ article.title }}</li>
     </ol>
   </div>
 
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="article-status">
-      <span>2018年5月11日 14:36 </span>
+      <span>{{ article.created_time|date:"Y-m-d, G:i" }}</span>
       <span>阅读 161 </span>
 
       <span>
@@ -117,11 +117,14 @@
     </span>
 
     <span class='next-article'>
-
       {% if next_article.title %}
-        <a href="{% url 'article_detail' next_article.id %}">{{ next_article.title }} →</a>
+        {% if blog_type == 'all' %}
+          <a href="#">{{ next_article.title }} →</a>
+        
+        {% else%}
+          <a href="{% url 'article_detail' next_article.id %}?blog_type={{ article.blog_type }}">{{ next_article.title }} →</a>
+        {% endif %}
       {% endif %}
-
     </span>
   </div>
 {% endblock %}
