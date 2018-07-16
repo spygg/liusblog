@@ -12,8 +12,12 @@
   <!-- 面包屑导航 -->
   <div class="nav-path">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
-        <li class="breadcrumb-item"><a href="#">{{ article.blog_type }}</a></li>
+        <li class="breadcrumb-item">
+          <a href="/">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'article_list' %}?blog_type={{ article.blog_type }}">{{ article.blog_type }}</a>
+        </li>
         <li class="breadcrumb-item" class="active"> {{ article.title }}</li>
     </ol>
   </div>
@@ -23,11 +27,9 @@
 
     <div class="article-info">
       <div class="article-title">
-        
           <h1>
             {{ article.title }}
           </h1>
-       
       </div>
     </div>
     <div class="article-status">
@@ -112,7 +114,7 @@
   <div class="article-nav">
     <span class='pre-article'>
       {% if prev_article.title %}
-        <a href="{% url 'article_detail' prev_article.id %}">← {{ prev_article.title }} </a>
+        <a href="{% url 'article_detail' %}?id={{ prev_article.id }}">← {{ prev_article.title }} </a>
       {% endif %}
     </span>
 
@@ -122,7 +124,7 @@
           <a href="#">{{ next_article.title }} →</a>
         
         {% else%}
-          <a href="{% url 'article_detail' next_article.id %}?blog_type={{ article.blog_type }}">{{ next_article.title }} →</a>
+          <a href="{% url 'article_detail' %}?id={{ next_article.id }}&blog_type={{ article.blog_type }}">{{ next_article.title }} →</a>
         {% endif %}
       {% endif %}
     </span>

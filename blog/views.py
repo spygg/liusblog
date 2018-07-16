@@ -7,6 +7,8 @@ import re
 
 # Create your views here.
 
+
+
 def home(request):
     return article_list(request)
 
@@ -34,6 +36,8 @@ def article_list(request):
     month = request.GET.get('month', '')
 
     print(blog_type, year, month, page_id)
+
+    #默认情况下不会出现同时筛选时间和类型的
     if year and month:
         blogs_all = Blog.objects.filter(created_time__year = year, created_time__month = month);
     elif blog_type:
@@ -50,9 +54,10 @@ def article_list(request):
     context['page_nums'] = blogs.page_range
     context['current_page'] = page_id
     context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog')) 
-    context['type'] = blog_type
+    context['blog_type'] = blog_type
     context['year'] = year
     context['month'] = month
+    context['article_num'] = blogs_all.count()
     # .annotate(blog_count = Count('last_modify_time'))
     blog_dates_temp = Blog.objects.dates('created_time', 'month', order = 'DESC')    
     blog_dates = {}
@@ -66,8 +71,10 @@ def article_list(request):
     return render(request, 'article_list.html', context)
 
 
-def article_detail(request, id):
+def article_detail(request):
     context = {}
+    id = request.GET.get('id', '0')
+    print('idis====', id)
     blog = get_object_or_404(Blog, pk=id)
     context['article'] = blog
     #blog_type = request.GET.get('blog_type', '')
@@ -110,6 +117,16 @@ def article_detail(request, id):
         blog_next = Blog.objects.filter(created_time__lt = blog.created_time).first()
 
     print('PRE####', blog_next)
+
+    context['blog_type'] = blog_type
+    context['blog_types'] = BlogType.objects.all()
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
     return render(request, 'article_detail.html', context) 
+
+
+def about_me(request):
+    context = {}
+    context['blog_type'] = 'about'
+    context['blog_types'] = BlogType.objects.all()
+    return render(request, 'about_me.html', context)

@@ -37,7 +37,7 @@
              </button>
 
           <div class="navbar-brand">
-            <a href="index.html">
+            <a href="{% url 'home' %}">
               <span>LiusBlog</span>
             </a>
           </div>
@@ -45,8 +45,16 @@
         
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'home' %}">{# <span class="glyphicon glyphicon-home"></span> #}首页</a></li>
-            <li class="dropdown">
+            {% if blog_type == 'all'%}
+              <li class="active">
+            {% elif blog_type == ''%}
+              <li class="active">
+            {% else %}
+              <li>
+            {% endif %}
+              <a href="{% url 'home' %}">{# <span class="glyphicon glyphicon-home"></span> #}首页</a>
+            </li>
+<!--             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Qt<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="#">QML</a></li>
@@ -68,8 +76,26 @@
             </li>
 
             <li><a href="">Html</a></li>
-            <li><a href="">杂谈</a></li>
-            <li><a href="about.html">关于</a></li>
+            <li><a href="">杂谈</a></li> -->
+            
+            {% for blog_catagroy in blog_types %}
+              {% if blog_catagroy.type_name == blog_type %}  
+                <li class="active">
+              {% else %}
+                <li>
+              {% endif %}
+
+                <a href="{% url 'article_list' %}?blog_type={{ blog_catagroy }}"> {{ blog_catagroy }} </a>
+              </li>
+            {% endfor %}
+            
+            {% if blog_type == 'about'%}
+              <li class="active">
+            {% else %}
+              <li>
+            {% endif %}
+              <a href="{% url 'about_me' %}">关于</a>
+            </li>
           </ul>
           
           <!-- 右侧按钮 -->
