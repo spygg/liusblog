@@ -3,39 +3,45 @@ from django.core.paginator import Paginator
 from .models import BlogType, Blog
 from django.db.models import Count
 from django.db.models import Q
+from django.contrib import auth
+from django.http import HttpResponseRedirect, HttpResponse
 import re
+from urllib.request import unquote
+import urllib.parse
+
 
 # Create your views here.
 
+def google(request, keyworkd):
+    #response = HttpResponseRedirect('http://www.bing.com/search?q=%s' % keyworkd)
 
+    url = 'http://cn.bing.com/search?q='
+
+    #使用网址转码
+    key = urllib.parse.quote(keyworkd)
+    url = url + key
+    url = r'https://cn.bing.com/search?q=love&go=Submit&qs=n&form=QBLH&sp=-1&pq=djiango+redirect&sc=0-16&sk=&cvid=F80B2756E77344B4ABE42413E60AD7A4'
+    response = urllib.request.urlopen(url)
+    html = response.read().decode('utf-8')
+
+    html = html.replace('href="/', 'href="https://cn.bing.com/')
+    html = html.replace('src="/', 'src="https://cn.bing.com/')
+    with open("google.html", "w") as f:
+        f.write(html)
+    response = HttpResponse(html)
+    #print(response)
+    return response
 
 def home(request):
     return article_list(request)
 
 def article_list(request):
     context = {}
-    #根据输入参数获取文章列表
-    # if page_type == "type_index":
-    #     blogs_all = Blog.objects.all()
-    # elif page_type == "type_page":
-    #     if type_name == 'all':
-    #         blogs_all = Blog.objects.filter();
-    #     else:
-    #         blogs_all = Blog.objects.filter(blog_type__type_name = type_name);
 
-    # elif page_type == "type_date":
-    #     if year and month:
-    #         blogs_all = Blog.objects.filter(created_time__year = year, created_time__month = month);
-    #     else:
-    #         blogs_all = Blog.objects.filter();
-    # else:
-    #     raise Exception('Server Error!')
     page_id = request.GET.get('page_id', '1')
     blog_type = request.GET.get('blog_type', '')
     year = request.GET.get('year', '')
     month = request.GET.get('month', '')
-
-    print(blog_type, year, month, page_id)
 
     #默认情况下不会出现同时筛选时间和类型的
     if year and month:
@@ -74,40 +80,36 @@ def article_list(request):
 def article_detail(request):
     context = {}
     id = request.GET.get('id', '0')
-    print('idis====', id)
+
     blog = get_object_or_404(Blog, pk=id)
     context['article'] = blog
     #blog_type = request.GET.get('blog_type', '')
     
-    pre_url = request.META.get('HTTP_REFERER', '')
+    pre_url = unquote(request.META.get('HTTP_REFERER', ''))
     blog_type = ''
     year = ''
     month = ''
 
-    print(pre_url)
-    pattern = re.compile(r"blog_type=(?P<blog_type>\w+)");
+    pattern = re.compile(r"blog_type=(?P<blog_type>.+)");
     result = re.search(pattern, pre_url)
     if result:
         blog_type = result.group('blog_type')
-    else:
-        print('re', result)
 
-    pattern = re.compile(r"year=(?P<year>.+?)&");
+    pattern = re.compile(r"year=(?P<year>[0-9][0-9][0-9][0-9])");
     result = re.search(pattern, pre_url)
     if result:
         year = result.group('year')
-        print(year)
 
     pattern = re.compile(r"month=(?P<month>[0-9][0-9])");
     result = re.search(pattern, pre_url)
     if result:
         month = result.group('month')
-        print(month)
+   
+
 
 
     context['url'] = request.get_raw_uri()
 
-    print('####BT', blog_type)
 
     if blog_type:
         blog_prev = Blog.objects.filter(blog_type__type_name = blog_type, created_time__gt = blog.created_time).last()  
@@ -116,12 +118,13 @@ def article_detail(request):
         blog_prev = Blog.objects.filter(created_time__gt = blog.created_time).last()
         blog_next = Blog.objects.filter(created_time__lt = blog.created_time).first()
 
-    print('PRE####', blog_next)
+
 
     context['blog_type'] = blog_type
     context['blog_types'] = BlogType.objects.all()
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
+
     return render(request, 'article_detail.html', context) 
 
 
@@ -130,3 +133,25 @@ def about_me(request):
     context['blog_type'] = 'about'
     context['blog_types'] = BlogType.objects.all()
     return render(request, 'about_me.html', context)
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')
+
+
+def login(request):
+    print(dir(request))
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = auth.authenticate(request, username=username, password=password)
+        if user is not None:
+            auth.login(request, user)
+        #     # Redirect to a success page.
+        # else:
+        #     # Return an 'invalid login' error message.
+        
+        return HttpResponseRedirect('/')
+    else:
+        return render(request, 'login.html', {})

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    
+{% endblock %}
+
+{% block js %}
+    
+{% endblock %}
+
+ {% block main_area %}
+
+    <form method="POST" action="{% url 'login' %}">
+         {% csrf_token %} 
+        <label>用户名:</label>
+        <input type="text" name="username"/>
+        <label>密码:</label>
+        <input type="password" name="password"/>
+        <input type="submit" name="submit" value="登录按钮" />
+    </form>
+ {% endblock %}

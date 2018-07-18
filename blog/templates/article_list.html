@@ -9,6 +9,7 @@
 {% endblock %}
 
 
+
 {% block bulletin %}
     {# 荧光屏区域 #}
     <div class="scroll-wrap">
@@ -42,7 +43,6 @@
 
 {% block left_area %}
   
-
   {# 当是文章分类时 #}
   {% if blog_type %}
     <!-- 面包屑导航 -->
@@ -114,7 +114,7 @@
         <div class="well article-area clearfix">
           <!-- 左边图片 -->
           <div class="col-md-5 article-img">
-            <a href="{% url 'article_detail' %}?id={{ article.id }}">
+            <a href="{% url 'article_detail' %}?id={{ article.id }}&blog_type={{ blog_type }}">
               <img src="https://dummyimage.com/600x400/333333/eeeeee&text=占位符">
             </a>
           </div>
@@ -133,7 +133,7 @@
                     </span>
                   </div>
 
-                <a class="article-title" href="{% url 'article_detail' %}?id={{ article.id }}&blog_type={{ type }}">
+                <a class="article-title" href="{% url 'article_detail' %}?id={{ article.id }}&blog_type={{ blog_type }}">
                   <span>
                     {{ article.title }}
                   </span>
@@ -168,7 +168,7 @@
                     </a>
                   </span>
                   <span>
-                    <a href="{% url 'article_detail' %}?id={{ article.id }}" class="show-all-aritle pull-right">阅读&gt;&gt;</a>
+                    <a href="{% url 'article_detail' %}?id={{ article.id }}&blog_type={{ blog_type }}" class="show-all-aritle pull-right">阅读&gt;&gt;</a>
                   </span>
                 </div><!-- 阅读等状态信息结束 -->
               </div><!-- 文章摘要结束 -->

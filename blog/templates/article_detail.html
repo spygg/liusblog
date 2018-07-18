@@ -114,7 +114,7 @@
   <div class="article-nav">
     <span class='pre-article'>
       {% if prev_article.title %}
-        <a href="{% url 'article_detail' %}?id={{ prev_article.id }}">← {{ prev_article.title }} </a>
+        <a href="{% url 'article_detail' %}?id={{ prev_article.id }}&blog_type={{ blog_type }}">← {{ prev_article.title }} </a>
       {% endif %}
     </span>
 
@@ -124,7 +124,7 @@
           <a href="#">{{ next_article.title }} →</a>
         
         {% else%}
-          <a href="{% url 'article_detail' %}?id={{ next_article.id }}&blog_type={{ article.blog_type }}">{{ next_article.title }} →</a>
+          <a href="{% url 'article_detail' %}?id={{ next_article.id }}&blog_type={{ blog_type }}">{{ next_article.title }} →</a>
         {% endif %}
       {% endif %}
     </span>

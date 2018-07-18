@@ -54,29 +54,6 @@
             {% endif %}
               <a href="{% url 'home' %}">{# <span class="glyphicon glyphicon-home"></span> #}首页</a>
             </li>
-<!--             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Qt<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">QML</a></li>
-                
-                <li role="separator" class="divider"></li>
-                <li><a href="#">QWidget</a></li>
-              </ul>
-            </li>
-
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Python<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-       
-                <li><a href="#">Django</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">爬虫</a></li>
-                <li><a href="#">PyQt</a></li>
-              </ul>
-            </li>
-
-            <li><a href="">Html</a></li>
-            <li><a href="">杂谈</a></li> -->
             
             {% for blog_catagroy in blog_types %}
               {% if blog_catagroy.type_name == blog_type %}  
@@ -110,22 +87,45 @@
                   </div>
               </form>
               
-              <div class="nav-new-article">
-                <a href="">
-                  <i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i>
-                  <span>新文章</span>
-                </a>
-              </div>
+          
             </ul>
+            {% if request.user.is_authenticated %}
+              <ul class="nav navbar-nav navbar-right">
+                
+                {% if request.user.is_superuser %}
+                  <div class="nav-new-article">
+                    <a href="">
+                      <i class="fa fa-2x fa-pencil-square-o" aria-hidden="true"></i>
+                      <span>新文章</span>
+                    </a>
+                  </div>
+                {% endif %}
+         
 
-            <ul class="nav navbar-nav">
-              <li>
-                  <a href="#">登录</a>
-              </li>
-              <li>
-                  <a href="#">注册</a>
-              </li>
-            </ul>
+    
+                <li class="dropdown navbar-right" >
+                  <a  style="padding-left: 0px;padding-top: 5px;padding-bottom: 5px; margin-left: 10px;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" title='{{ request.user }} 欢迎回来!'>    
+                    <img style="border-radius: 50%;height: 40px;" src="/static/imgs/default.png" alt="{{ request.user }}">  
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">个人资料</a></li>
+                    <li><a href="#">消息</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'logout' %}">退出</a></li>
+                  </ul>
+                </li>
+              </ul>
+            {% else %}
+               <ul class="nav navbar-nav">
+                <li >
+                    <a style="font-weight: bold" href="{% url 'login' %}">登录</a>
+                </li>
+                <li>
+                    <a style="font-weight: bold"  href="#">注册</a>
+                </li>
+              </ul>
+            {% endif %}
           </div>
           <!-- 右侧按钮结束 -->
           
@@ -140,17 +140,20 @@
         <div class="row clearfix">
             {% block bulletin %}
             {% endblock %}
-            <!-- 左边区域 -->
-            <div id="left-area" class="col-xs-12 col-sm-8 col-md-9">
-                {% block left_area%}
-                {% endblock %}
-            </div>
 
-            <!-- 右边区域 -->
-            <div  id="right-area" class="hidden-xs col-sm-4 col-md-3">
-                {% block right_area%}
-                {% endblock %}
-            </div>
+            {% block main_area %}
+            <!-- 左边区域 -->
+              <div id="left-area" class="col-xs-12 col-sm-8 col-md-9">
+                  {% block left_area%}
+                  {% endblock %}
+              </div>
+
+              <!-- 右边区域 -->
+              <div  id="right-area" class="hidden-xs col-sm-4 col-md-3">
+                  {% block right_area%}
+                  {% endblock %}
+              </div>
+            {% endblock %}
         </div>
     </div>
 
