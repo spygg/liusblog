@@ -116,6 +116,8 @@ a:active{
 
 .ariticle-brief{
      line-height: 1.6em;
+
+    word-break: break-all;
 }
 
 

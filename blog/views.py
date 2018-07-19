@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from .models import BlogType, Blog
+from .models import BlogType, ReadNumber, Blog
 from django.db.models import Count
 from django.db.models import Q
 from django.contrib import auth
@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 import re
 from urllib.request import unquote
 import urllib.parse
-
+from .forms import LoginForm
 
 # Create your views here.
 
@@ -79,17 +79,17 @@ def article_list(request):
 
 def article_detail(request):
     context = {}
-    id = request.GET.get('id', '0')
-
-    blog = get_object_or_404(Blog, pk=id)
-    context['article'] = blog
-    #blog_type = request.GET.get('blog_type', '')
-    
-    pre_url = unquote(request.META.get('HTTP_REFERER', ''))
     blog_type = ''
     year = ''
     month = ''
 
+    pre_url = unquote(request.META.get('HTTP_REFERER', ''))
+    id = request.GET.get('id', '0')
+    blog = get_object_or_404(Blog, pk=id)
+
+    
+
+    #根据上一次访问的类型确定下次要访问的页面类型
     pattern = re.compile(r"blog_type=(?P<blog_type>.+)");
     result = re.search(pattern, pre_url)
     if result:
@@ -105,12 +105,12 @@ def article_detail(request):
     if result:
         month = result.group('month')
    
-
-
+    #阅读计数
+    is_read = request.COOKIES.get('aritcle_%s' % id)    
+    if not is_read == 'YES':
+        blog.plus_read_number();
 
     context['url'] = request.get_raw_uri()
-
-
     if blog_type:
         blog_prev = Blog.objects.filter(blog_type__type_name = blog_type, created_time__gt = blog.created_time).last()  
         blog_next = Blog.objects.filter(blog_type__type_name = blog_type, created_time__lt = blog.created_time).first()
@@ -118,14 +118,16 @@ def article_detail(request):
         blog_prev = Blog.objects.filter(created_time__gt = blog.created_time).last()
         blog_next = Blog.objects.filter(created_time__lt = blog.created_time).first()
 
-
-
+    context['article'] = blog
     context['blog_type'] = blog_type
     context['blog_types'] = BlogType.objects.all()
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
 
-    return render(request, 'article_detail.html', context) 
+
+    response = render(request, 'article_detail.html', context) 
+    response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)
+    return response
 
 
 def about_me(request):
@@ -141,17 +143,23 @@ def logout(request):
 
 
 def login(request):
-    print(dir(request))
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = auth.authenticate(request, username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-        #     # Redirect to a success page.
-        # else:
-        #     # Return an 'invalid login' error message.
         
-        return HttpResponseRedirect('/')
+        loginForm = LoginForm(request.POST)
+
+        if loginForm.is_valid():
+            username = loginForm.cleaned_data['username']
+            password = loginForm.cleaned_data['password']
+            # username = request.POST['username']
+            # password = request.POST['password']
+            user = auth.authenticate(request, username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+            #     # Redirect to a success page.
+            # else:
+            #     # Return an 'invalid login' error message.
+            
+            return HttpResponseRedirect('/')
     else:
-        return render(request, 'login.html', {})
+        loginForm = LoginForm()
+        return render(request, 'login.html', {'loginForm': loginForm})

@@ -34,7 +34,7 @@
     </div>
     <div class="article-status">
       <span>{{ article.created_time|date:"Y-m-d, G:i" }}</span>
-      <span>阅读 161 </span>
+      <span>阅读 {{ article.read_number }} </span>
 
       <span>
           <a href="#" target="#" title="查看文章评论">评论 7</a>
@@ -53,7 +53,7 @@
     <div class="copyright hidden-xs">
       <p class="copyright-p"><span class="copyright-strong">本文标题:</span>{{ article.title }}</p>
       <p class="copyright-p"><span class="copyright-strong">文章作者:</span>{{ article.author}}</p>
-      <p class="copyright-p"><span class="copyright-strong">发布时间:</span> {{ article.created_time|date:"Y-m-d, G:i:s" }}</p>
+      <p class="copyright-p"><span class="copyright-strong">发布时间:</span>{{ article.created_time|date:"Y-m-d, G:i:s" }}</p>
       <p class="copyright-p"><span class="copyright-strong">最后更新:</span>{{ article.last_modify_time|date:"Y-m-d, G:i:s" }}</p>
       <p class="copyright-p"><span class="copyright-strong">原始链接:</span> <a href="">{{ url }}</a></p>
     </div>

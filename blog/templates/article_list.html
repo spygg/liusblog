@@ -145,14 +145,14 @@
                 <!-- 文章正文简介 -->
                 <div class="ariticle-brief">
                  {# 摘要 #}
-                 {{ article.content|striptags|truncatechars:150 }}
+                 {{ article.content|striptags|truncatechars:180 }}
                 </div><!-- 文章正文简介结束 -->
 
                 <!-- 阅读等状态信息 -->
                 <div class="article-status">
                   <span class="item">
                     <i class="fa fa-eye ml-2 mr-1"></i>
-                    ##
+                    {{ article.read_number }}
                   </span>
                   <span class="item ">
                     <i class="fa fa-calendar-times-o"></i>
@@ -163,8 +163,8 @@
                     <a href="#" target="_blank" title="查看文章评论">
                       <i class="fa fa-comments">
                       </i>
-                      {# 阅读数 #}
-                      ##
+                      {# 评论数 #}
+                      
                     </a>
                   </span>
                   <span>
