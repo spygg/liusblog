@@ -4,6 +4,19 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
+class UsrInfo(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE, verbose_name = '邮箱绑定')
+    is_bind = models.BooleanField(verbose_name = '邮箱绑定')
+
+    def __str__(self):
+        return self.user.username
+
+class Bulletin(models.Model):
+    url = models.URLField()
+    content = models.CharField(max_length = 100)
+
+    def __str__(self):
+        return self.content
 
 class BlogType(models.Model):
     type_name = models.CharField(max_length = 20)
@@ -32,11 +45,13 @@ class Blog(models.Model):
             return 0
     
     def plus_read_number(self):
-        if not self.readnumber:
+        try:
+            self.readnumber;
+        except ObjectDoesNotExist:
             self.readnumber = ReadNumber()
             self.readnumber.blog = self
-
-        self.readnumber.read_number = self.readnumber.read_number + 1
+        
+        self.readnumber.read_number += 1
         self.readnumber.save()
         
 

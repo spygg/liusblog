@@ -5,44 +5,31 @@
 {% endblock %}
 
 {% block js %}
-    <script type="text/javascript" src="/static/js/index.js"></script>
+    <script type="text/javascript" src="/static/js/index.js">
+    </script>
 {% endblock %}
 
-
-
 {% block bulletin %}
-    {# 荧光屏区域 #}
-    <div class="scroll-wrap">
+  {# 荧光屏区域 #}
+  <div class="scroll-wrap">
+    {% if bulletins %}
       <div class="bulletin">
         <img src="/static/imgs/bulletin.gif">
       </div>
-      <ul class="scroll-con fn-left">
+    {% endif %}
+    <ul class="scroll-con fn-left">
+      {% for bulletin in bulletins %}
         <li>
-          <a href="#">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          <a href="{{ bulletin.url }}" target="_blank">
+            {{ bulletin.content }}
           </a>
         </li>
-        <li>
-          <a href="#">
-            关于XXOO的八项规定
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            新时期的长征说明
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            关于下载片子的情况说明
-          </a>
-        </li>
-      </ul>
-    </div>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}
 
 {% block left_area %}
-  
   {# 当是文章分类时 #}
   {% if blog_type %}
     <!-- 面包屑导航 -->
@@ -61,6 +48,7 @@
     <div class="nav-path">
       <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{% url 'article_list' %}">全部文章</a></li>
+          <!-- 链接为当前页面, 可以空置 -->
           <li class="breadcrumb-item"><a href=""> {{ year }} 年 {{ month}} 月 </a></li>
       </ol>
     </div>
@@ -124,8 +112,8 @@
                <div class="article-info">
                   <div class="article-tag">
                     <span class="article-tag-catinner">
-                      <a href="#" class="classname">
-                        {{article.blog_type}}
+                      <a href="{% url 'article_list' %}?blog_type={{ article.blog_type }}" class="classname">
+                        {{ article.blog_type }}
                       </a>
                     </span>
 
@@ -257,13 +245,13 @@
      
     </div>
     <div class="avatar">
-      <a href="about.html">
+      <a href="{% url 'about_me' %}">
         <img src="/static/imgs/social-media/avatar.jpg">
       </a>
     </div>
     <div class="card-body card-biography-body">
       <div class="username">
-        <a href="about.html">
+        <a href="{% url 'about_me' %}">
           <span class="">spygg</span>
         </a>
       </div>

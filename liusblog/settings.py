@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'blog',
+    'comment',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 CKEDITOR_UPLOAD_PATH= "uploader/"
+
+
+
+EMAIL_HOST = 'smtp.126.com' #SMTP地址
+EMAIL_HOST_USER = 'liushidc@126.com' #自己的邮箱名
+EMAIL_HOST_PASSWORD = '820028' #自己的邮箱密码

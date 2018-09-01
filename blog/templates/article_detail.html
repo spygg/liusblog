@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block js %}
-    
+    <script type="text/javascript" src="/static/js/artiledetail.js"></script>
 {% endblock %}
 
 {% block left_area%}
   <!-- 面包屑导航 -->
   <div class="nav-path">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb breadcrumb-artile-path">
         <li class="breadcrumb-item">
           <a href="/">Home</a>
         </li>
@@ -129,7 +129,20 @@
       {% endif %}
     </span>
   </div>
+
+
+  <div style="border: 1px dashed; margin-top: 2em;background-color: #fff">
+    评论内容
+  </div>
+  <div style="border: 1px dashed; margin-top: 2em; background-color: #fff">
+    评论列表
+  </div>
 {% endblock %}
 
 {% block right_area%}
+   <div class="hidden-xs  col-sm-4 col-md-3 toc-area">
+      <ul class="toc-level1">
+      </ul>
+  </div>
+  <!-- 右边区域结束 --> 
 {% endblock %}

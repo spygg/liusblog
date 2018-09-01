@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <style type="text/css">
+         .register-area {
+            margin-top: 50px;
+        }
+
+        ul{
+            list-style: none;
+            padding-left: 1em;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    
+{% endblock %}
+
+{% block main_area %}
+    <div class="container">
+        <div class="row">
+            <div class="register-area col-md-6 col-md-offset-3">
+                <div class="panel panel-primary ">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">用户信息</h3>
+                    </div>
+                    <div class="panel-body">
+                        
+                        <div>
+                            <label>用户名:</label>
+                            <label>{{ user.username }}</label>
+                        </div>
+
+                        <div>
+                            {% if user.email %}
+                                <label>邮箱:</label>
+                                <label>{{ user.email }}</label>
+                            {% else %}
+                                <a href="#">绑定邮箱 </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                     <div class="panel-footer">
+                         <p>更多操作</p>
+                         <hr>
+                         <a href="#">修改密码</a>
+                     </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+   
+{% endblock %}

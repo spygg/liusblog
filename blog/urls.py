@@ -20,8 +20,15 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('articles', views.article_list, name='article_list'),
     path('article', views.article_detail, name='article_detail'),
-    path('google/<str:keyworkd>', views.google, name='google'),
     path('about', views.about_me, name='about_me'),
     path('login', views.login, name='login'),
+    path('register', views.register, name='register'),
+    path('userinfo', views.userinfo, name='userinfo'),
+    path('bindemail', views.bindemail, name='bindemail'),
+    path('resetpasswd', views.resetpasswd, name='resetpasswd'),
     path('logout', views.logout, name='logout'),
+
+
+    #Test google search
+    #path('google/<str:keyworkd>', views.google, name='google'),
 ]

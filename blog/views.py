@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from .models import BlogType, ReadNumber, Blog
+from .models import BlogType, ReadNumber, Blog, Bulletin
 from django.db.models import Count
 from django.db.models import Q
 from django.contrib import auth
@@ -8,9 +8,26 @@ from django.http import HttpResponseRedirect, HttpResponse
 import re
 from urllib.request import unquote
 import urllib.parse
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm, ResetPassWdForm
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
+class SendMail(object):
+    """docstring for SendMail"""
+    def __init__(self, arg):
+        super(SendMail, self).__init__()
+        self.arg = arg
+    
+    def send_email(self):
+        send_mail(
+            'Subject here',
+            'Here is the message.',
+            'from@example.com',
+            ['to@example.com'],
+            fail_silently=False,
+        )    
 
 def google(request, keyworkd):
     #response = HttpResponseRedirect('http://www.bing.com/search?q=%s' % keyworkd)
@@ -72,7 +89,9 @@ def article_list(request):
                                     created_time__year = blog_date.year,\
                                     created_time__month = blog_date.month).\
                                     count()
+
     context['blog_dates'] = blog_dates
+    context['bulletins'] = Bulletin.objects.all()
 
     return render(request, 'article_list.html', context)
 
@@ -86,8 +105,6 @@ def article_detail(request):
     pre_url = unquote(request.META.get('HTTP_REFERER', ''))
     id = request.GET.get('id', '0')
     blog = get_object_or_404(Blog, pk=id)
-
-    
 
     #根据上一次访问的类型确定下次要访问的页面类型
     pattern = re.compile(r"blog_type=(?P<blog_type>.+)");
@@ -124,7 +141,6 @@ def article_detail(request):
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
 
-
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)
     return response
@@ -148,18 +164,75 @@ def login(request):
         loginForm = LoginForm(request.POST)
 
         if loginForm.is_valid():
-            username = loginForm.cleaned_data['username']
-            password = loginForm.cleaned_data['password']
-            # username = request.POST['username']
-            # password = request.POST['password']
-            user = auth.authenticate(request, username=username, password=password)
-            if user is not None:
-                auth.login(request, user)
-            #     # Redirect to a success page.
-            # else:
-            #     # Return an 'invalid login' error message.
+            user = loginForm.cleaned_data['user']
+            auth.login(request, user)
             
             return HttpResponseRedirect('/')
     else:
         loginForm = LoginForm()
-        return render(request, 'login.html', {'loginForm': loginForm})
+    
+    context = {}
+    context['loginForm'] = loginForm
+    return render(request, 'login.html', context)
+
+
+def register(request):
+    if request.method == 'POST':
+        
+        registerForm = RegisterForm(request.POST)
+
+        if registerForm.is_valid():
+            username = registerForm.cleaned_data['username']
+            password = registerForm.cleaned_data['password']
+            email = registerForm.cleaned_data['email']
+
+            user = User.objects.create_user(username, email, password)
+            user.save()
+
+            user = auth.authenticate(username = username, password=password)
+            auth.login(request, user)
+            return HttpResponseRedirect('/')
+
+    else:
+        registerForm = RegisterForm()
+    print('Register')
+    context = {}
+    context['registerForm'] = registerForm
+    return render(request, 'register.html', context)
+
+def userinfo(request):
+    context = {}
+  
+    return render(request, 'userinfo.html', context)
+
+def bindemail(request):
+    context = {}
+    return render(request, 'userinfo.html', context)
+
+
+def resetpasswd(request):
+    info = ''
+    if request.method == 'POST': 
+        resetPassWdForm = ResetPassWdForm(request.POST)
+
+        if resetPassWdForm.is_valid():
+            email = resetPassWdForm.cleaned_data['email']
+
+            send_mail(
+                subject = '重设密码,不要回复本邮件!',
+                message = '',
+                html_message = '<div><h1>打开网址重设密码</h1><a href="http://spygg.pythonanywhere.com/data/?active=1034">重设密码</a></div>',
+                from_email = settings.EMAIL_HOST_USER,
+                recipient_list = [email,],
+                fail_silently=False,
+            )
+
+            info = '邮件发送成功,请登录邮箱!'
+            #return HttpResponseRedirect('/')
+
+    else:
+        resetPassWdForm = ResetPassWdForm()
+    context = {}
+    context['resetPassWdForm'] = resetPassWdForm
+    context['info'] = info
+    return render(request, 'resetpasswd.html', context)

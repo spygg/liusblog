@@ -9,9 +9,6 @@ html, body{
     font-family: Arial,Helvetica,sans-serif,"Hiragino Sans GB","WenQuanYi Zen Hei",Microsoft Yahei,"微软雅黑";
 }
 
-li{
-    display: list-item;
-}
 
 .navbar-brand{
     font-size: 1.5em;

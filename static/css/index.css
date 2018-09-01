@@ -128,3 +128,13 @@ div.scroll-wrap{
 .social-contact img:hover {
     transform: scale(1.2);
 }
+
+
+
+.popover-qr-code{
+    max-width: 120px;
+}
+
+.popover-qr-code:hover{
+    transform: scale(1.1);
+}

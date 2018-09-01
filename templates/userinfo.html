@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block css %}
+    <style type="text/css">
+         .register-area {
+            margin-top: 50px;
+        }
+
+        ul{
+            list-style: none;
+            padding-left: 1em;
+        }
+
+        label{
+            font-weight: 300;
+            margin-top: 0.5em;
+        }
+
+        .tip-info{
+            font-size: 1.1em;
+            #font-weight: bold;
+        }
+
+
+    </style>
+{% endblock %}
+
+{% block js %}
+    
+{% endblock %}
+
+{% block main_area %}
+    <div class="container">
+        <div class="row">
+            <div class="register-area col-md-6 col-md-offset-3">
+                <div class="panel panel-primary ">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">用户信息</h3>
+                    </div>
+                    <div class="panel-body">
+                        
+                        <ul>
+                            <li>
+                                用户名: {{ user.username }}
+                            </li>
+
+                            <li>
+                                邮 箱:
+                                 {% if user.email %}
+                                    <label>{{ user.email }}</label>
+                                {% else %}
+                                    未绑定
+                                {% endif %}
+                                
+                                {% if not user.is_bind %}
+                                    <a href="#">验证邮箱 </a>
+                                {% endif %}
+                            </li>
+
+                            <li>
+                                最后登录时间: {{ user.last_login|date:"Y-m-d, G:i:s" }}
+                            </li>
+                        </ul>
+                       
+                    </div>
+
+                     <div class="panel-footer">
+                        <a  class="tip-info" href="#">修改密码</a>
+                        <a  class="tip-info" href="#">退出登录</a>
+                     </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+
+   
+{% endblock %}
