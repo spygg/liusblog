@@ -179,3 +179,35 @@ div.article-nav:hover, div.article-nav.hover{
     list-style-type:decimal;
     font-size: 1em;
 }
+
+.comment-area{
+    margin-top: 1em;
+    background-color: #fff;
+}
+
+.comment-commit-area{
+    position: relative;
+    text-align: center;
+}
+
+.unlogin-status{
+    background-color: #eee;
+    padding:1em;
+    margin-bottom: 1em;
+}
+
+.comment-tips{
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.comment{
+    border-top: 1px solid #999;
+}
+.comment-list-area {
+    margin-top: 2em;
+}
+
+.comment-list{
+    margin-top: 1.2em;
+}

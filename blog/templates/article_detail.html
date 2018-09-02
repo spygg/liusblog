@@ -130,12 +130,70 @@
     </span>
   </div>
 
+  <div class="well comment-area clearfix">
+    <div class="comment-commit-area">
+      {% if user.is_authenticated %}
+        
+        <div class="login-status">
+           <form method="POST" action="{% url 'comment' %}">
+            {% csrf_token %} 
 
-  <div style="border: 1px dashed; margin-top: 2em;background-color: #fff">
-    评论内容
-  </div>
-  <div style="border: 1px dashed; margin-top: 2em; background-color: #fff">
-    评论列表
+  <!--           {% for field in loginForm %}
+                {{ field }}
+                <p class="text-danger">
+                    {{ field.errors.as_text }}
+                </p>
+            {% endfor %}
+            <span class="text-danger pull-left">
+                {{ loginForm.non_field_errors }} 
+            </span> 
+         -->
+            <textarea name='text' id='comemnt-text'></textarea>
+            <input type="hidden" name="object_id" value="{{ article.pk }}">
+            <input type="hidden" name="content_type" value="blog">
+            <input type="submit" class='btn btn-primary pull-right' value="发表" />
+          </form>
+        </div>
+       
+      {% else %}
+        <div class="unlogin-status">
+           <span>
+            您尚未登录, 请
+          </span>
+          <a href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+          <span>或</span>
+          <a href="{% url 'register' %}}?from={{ request.get_full_path }}">注册</a>
+          <span>后评论~</span>
+
+          <div class="login-link mt-2">
+            <a class="mx-3" href="{% url 'thridpaty_login' 'weibo' %}?from={{ request.get_full_path }}" title="社交账号登录有点慢，请耐心等候！"><i
+                    class="fa fa-weibo fa-2x"></i></a>
+            <a class="mx-3" href="{% url 'thridpaty_login' 'gitbhub' %}?from={{ request.get_full_path }}" title="社交账号登录有点慢，请耐心等候！"><i
+                    class="fa fa-github fa-2x"></i></a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="comment-list-area clearfix">
+      {% if comments%}  
+        <div class="comment-tips">
+          2 人参与 | 2 条评论
+        </div>
+      {% endif %}
+      
+      <div class="comment-list">
+        {% for comment in comments%}
+          <div class='comment'>
+             {{ comment.user.username }} 
+             ({{ comment.created_time|date:"Y-m-d, G:i:s" }})
+             {{ comment.content }}
+          </div>
+        {% empty %}
+          暂无评论,赶紧抢沙发~~~~
+        {% endfor %}
+      </div> 
+    </div>
   </div>
 {% endblock %}
 

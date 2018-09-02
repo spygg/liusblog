@@ -1,17 +1,21 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import BlogType, ReadNumber, Blog, Bulletin
 from django.db.models import Count
 from django.db.models import Q
 from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponse
-import re
-from urllib.request import unquote
-import urllib.parse
 from .forms import LoginForm, RegisterForm, ResetPassWdForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
+import re
+from urllib.request import unquote
+import urllib.parse
+from comment.models import Comment
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 # Create your views here.
 class SendMail(object):
@@ -28,6 +32,7 @@ class SendMail(object):
             ['to@example.com'],
             fail_silently=False,
         )    
+
 
 def google(request, keyworkd):
     #response = HttpResponseRedirect('http://www.bing.com/search?q=%s' % keyworkd)
@@ -56,6 +61,7 @@ def article_list(request):
     context = {}
 
     page_id = request.GET.get('page_id', '1')
+    print(page_id)
     blog_type = request.GET.get('blog_type', '')
     year = request.GET.get('year', '')
     month = request.GET.get('month', '')
@@ -102,8 +108,10 @@ def article_detail(request):
     year = ''
     month = ''
 
-    pre_url = unquote(request.META.get('HTTP_REFERER', ''))
+    pre_url = request.META.get('HTTP_REFERER', '')
     id = request.GET.get('id', '0')
+
+    print('id===============', id)
     blog = get_object_or_404(Blog, pk=id)
 
     #根据上一次访问的类型确定下次要访问的页面类型
@@ -141,6 +149,11 @@ def article_detail(request):
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
 
+    #评论内容区域
+    blog_content_type = ContentType.objects.get_for_model(blog)
+    comments = Comment.objects.filter(content_type=blog_content_type, object_id = blog.pk)
+    context['comments'] = comments
+
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)
     return response
@@ -158,16 +171,19 @@ def logout(request):
     return HttpResponseRedirect('/')
 
 
-def login(request):
-    if request.method == 'POST':
-        
-        loginForm = LoginForm(request.POST)
+def thridpaty_login(request, type):
+    print(type)
+    return HttpResponseRedirect('/')
 
+def login(request):
+    #url_from = request.META.get('HTTP_REFERER', reverse('home'))
+    pre_url = request.GET.get('from', reverse('home'))
+    if request.method == 'POST':
+        loginForm = LoginForm(request.POST)
         if loginForm.is_valid():
             user = loginForm.cleaned_data['user']
             auth.login(request, user)
-            
-            return HttpResponseRedirect('/')
+            return redirect(pre_url)
     else:
         loginForm = LoginForm()
     
@@ -191,7 +207,8 @@ def register(request):
 
             user = auth.authenticate(username = username, password=password)
             auth.login(request, user)
-            return HttpResponseRedirect('/')
+            pre_url = request.GET.get('from', reverse('home'))
+            return HttpResponseRedirect(pre_url)
 
     else:
         registerForm = RegisterForm()
