@@ -14,6 +14,7 @@ import re
 from urllib.request import unquote
 import urllib.parse
 from comment.models import Comment
+from comment.forms import CommentForm
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
@@ -111,7 +112,6 @@ def article_detail(request):
     pre_url = request.META.get('HTTP_REFERER', '')
     id = request.GET.get('id', '0')
 
-    print('id===============', id)
     blog = get_object_or_404(Blog, pk=id)
 
     #根据上一次访问的类型确定下次要访问的页面类型
@@ -153,6 +153,7 @@ def article_detail(request):
     blog_content_type = ContentType.objects.get_for_model(blog)
     comments = Comment.objects.filter(content_type=blog_content_type, object_id = blog.pk)
     context['comments'] = comments
+    context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':  blog.pk})
 
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)

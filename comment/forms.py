@@ -1,16 +1,40 @@
 from django import forms
 from django.contrib import auth 
 from django.contrib.auth.models import User
+from ckeditor.widgets import CKEditorWidget
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class CommentForm(forms.Form):
-    content = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'留下足迹再走嘛~'}))
+    content_type = forms.CharField(widget=forms.HiddenInput())
+    object_id = forms.IntegerField(widget=forms.HiddenInput())
+    content = forms.CharField(widget = CKEditorWidget(config_name='comment_ckeditor'), error_messages = {'required': '评论内容不能为空'})
+
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs:
+            self.user = kwargs.pop('user')
+
+        super(CommentForm, self).__init__(*args, **kwargs)
+
 
     def clean(self):
-        content = self.cleaned_data['content']
-        # user = auth.authenticate(username = username, password=password)
-        # if user is None:
-        #     raise forms.ValidationError('用户名或密码错误')
-        # else:
-        #     self.cleaned_data['user'] = user
+        #用户登录验证
+        if self.user.is_authenticated:
+            self.cleaned_data['user'] = self.user
+        else:
+            raise forms.ValidationError('用户尚未登录!')
+
+        #评论对象验证
+        content_type = self.cleaned_data['content_type']
+        object_id = self.cleaned_data['object_id']
+        try:
+            model_class = ContentType.objects.get(model = content_type).model_class()
+            print(model_class)
+            model_obj = model_class.objects.get(pk = object_id)
+            self.cleaned_data['content_object'] = model_obj
+        except ObjectDoesNotExist:
+            raise forms.ValidationError('评论的对象不存在!')
+
+        
         return self.cleaned_data
 

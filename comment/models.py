@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete = models.DO_NOTHING)
-    content = RichTextField()
+    content = models.TextField()
     created_time = models.DateTimeField(auto_now_add = True)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -18,5 +18,5 @@ class Comment(models.Model):
     def __str__(self):
         return "<Comment, %s>" % self.user
 
-    class Meat:
+    class Meta:
         ordering = ['-created_time']

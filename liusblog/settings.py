@@ -123,14 +123,35 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+#STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 CKEDITOR_UPLOAD_PATH= "uploader/"
 
+CKEDITOR_CONFIGS = {
+    'comment_ckeditor': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+            ['TextColor', 'BGColor',  'RemoveFormat'],
+            ['NumberedList', 'BulletedList'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Smiley', 'SpecialChar', 'Blockquote'],
+        ],
+        'width': 'auto',
+        'height': '180',
+        'tabSpaces': 4,
+        'removePlugins': 'elementspath',
+        'resize_enabled': False
+    }
+}
 
 
 EMAIL_HOST = 'smtp.126.com' #SMTP地址
 EMAIL_HOST_USER = 'liushidc@126.com' #自己的邮箱名
 EMAIL_HOST_PASSWORD = '820028' #自己的邮箱密码
+
+
+

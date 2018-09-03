@@ -185,15 +185,11 @@ div.article-nav:hover, div.article-nav.hover{
     background-color: #fff;
 }
 
-.comment-commit-area{
-    position: relative;
-    text-align: center;
-}
-
 .unlogin-status{
     background-color: #eee;
     padding:1em;
     margin-bottom: 1em;
+    text-align: center;
 }
 
 .comment-tips{
@@ -203,11 +199,20 @@ div.article-nav:hover, div.article-nav.hover{
 
 .comment{
     border-top: 1px solid #999;
+    word-wrap: break-word;
+    word-break: break-all;
+
 }
 .comment-list-area {
     margin-top: 2em;
+    
 }
 
 .comment-list{
     margin-top: 1.2em;
+
+}
+
+.django-ckeditor-widget{
+    width: 100%;
 }

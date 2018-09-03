@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    {% load static %}
     <title>
           {% block title %}{% endblock %}
     </title>
@@ -173,5 +173,7 @@
 
     </div>
     <!-- 网站脚注结束 -->
+    {% block scriptextends %}
+    {% endblock %}
 </body>
 </html>
