@@ -2,6 +2,11 @@ $(function(){
 
   var h2 = $('h2')
   var h3 = $('h3')
+
+  if (h2.length == 0){
+    return
+  }
+
   html_toc = ''
   for(var i = 0; i < h2.length; i++){
     //添加id属性
@@ -79,7 +84,7 @@ $(function(){
       //if($(id_text).offset() != undefined)
       {
           $("html,body").animate({
-              scrollTop: $(id_text).offset().top - 80
+              scrollTop: $(id_text).offset().top - $('#nav-area').height() - 5
             },
             100 //时间
         )

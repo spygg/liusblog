@@ -151,7 +151,8 @@ def article_detail(request):
 
     #评论内容区域
     blog_content_type = ContentType.objects.get_for_model(blog)
-    comments = Comment.objects.filter(content_type=blog_content_type, object_id = blog.pk)
+    # content_type=blog_content_type, 
+    comments = Comment.objects.filter(object_id = blog.pk)
     context['comments'] = comments
     context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':  blog.pk})
 

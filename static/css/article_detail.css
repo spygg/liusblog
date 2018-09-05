@@ -198,13 +198,20 @@ div.article-nav:hover, div.article-nav.hover{
 }
 
 .comment{
-    border-top: 1px solid #999;
+    /*border-top: 1px solid #999;*/
     word-wrap: break-word;
     word-break: break-all;
+    padding: 8px;
 
 }
+
+.comment p{
+    margin-bottom: 0px;
+}
+
+
 .comment-list-area {
-    margin-top: 2em;
+    margin-top: 1em;
     
 }
 
@@ -215,4 +222,11 @@ div.article-nav:hover, div.article-nav.hover{
 
 .django-ckeditor-widget{
     width: 100%;
+}
+
+.comment-user-img {
+    padding: 0px;
+}
+.comment-user-img img{
+    max-width: 100%;
 }
