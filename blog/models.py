@@ -26,11 +26,11 @@ class BlogType(models.Model):
 
 class Blog(models.Model):
     title = models.CharField(max_length = 100)
-    blog_type = models.ForeignKey(BlogType, on_delete = models.DO_NOTHING)
-    author = models.ForeignKey(User, on_delete = models.DO_NOTHING)
+    blog_type = models.ForeignKey(BlogType, on_delete = models.CASCADE)
+    author = models.ForeignKey(User, on_delete = models.CASCADE)
     content = RichTextUploadingField()
     
-    # read_number = models.ForeignKey(ReadNumber, on_delete = models.DO_NOTHING)
+    # read_number = models.ForeignKey(ReadNumber, on_delete = models.CASCADE)
     created_time = models.DateTimeField(auto_now_add = True)
     last_modify_time = models.DateTimeField(auto_now = True)
 

@@ -201,7 +201,8 @@ div.article-nav:hover, div.article-nav.hover{
     /*border-top: 1px solid #999;*/
     word-wrap: break-word;
     word-break: break-all;
-    padding: 8px;
+    padding: 8px 8px 5px 8px;
+    margin-bottom: 5px;
 
 }
 
@@ -229,4 +230,8 @@ div.article-nav:hover, div.article-nav.hover{
 }
 .comment-user-img img{
     max-width: 100%;
+}
+
+#sub_comment_list{
+    margin-top: 8px;
 }
