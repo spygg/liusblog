@@ -49,6 +49,12 @@ a:active{
     font-size: 1em;
 }
 
+.nav-path{
+    margin-top: 3px;
+}
+.nav-path ol{
+    margin-bottom: 0px;
+}
 
 .navbar-form{
     display: inline-block;
@@ -106,7 +112,7 @@ a:active{
 
 
 .article-area{
-    margin: 18px 0px 10px 0px;
+    margin: 3px 0px 10px 0px;
     padding-bottom: 3px;
     background-color: #fff;
 }
@@ -135,7 +141,7 @@ a:active{
 }
 
 .article-list{
-    margin-top: 10px;
+    margin-top: 5px;
 }
 .article-list .article-area:hover {
     box-shadow:0 2px 6px rgba(0, 0, 0, 0.275)
