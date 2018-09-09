@@ -62,7 +62,7 @@ def article_list(request):
     context = {}
 
     page_id = request.GET.get('page_id', '1')
-    print(page_id)
+    #print(page_id)
     blog_type = request.GET.get('blog_type', '')
     year = request.GET.get('year', '')
     month = request.GET.get('month', '')
@@ -155,7 +155,7 @@ def article_detail(request):
     comments = Comment.objects.filter(object_id = blog.pk)
     context['comments'] = comments
     context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':  blog.pk})
-
+    context['blog_content_type'] = blog_content_type
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)
     return response
@@ -214,7 +214,7 @@ def register(request):
 
     else:
         registerForm = RegisterForm()
-    print('Register')
+    
     context = {}
     context['registerForm'] = registerForm
     return render(request, 'register.html', context)

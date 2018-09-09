@@ -6,6 +6,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.db.models.query import QuerySet
+
+#递归查找所有子评论
+def do_recursive_find(comment_list, parent_id, level, result_list):
+    level += 1
+    for comment in comment_list:
+        if comment.object_id == parent_id:
+            result_list.insert(0, comment)
+            do_recursive_find(comment_list, comment.id, level, result_list)
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
@@ -23,12 +33,14 @@ class Comment(models.Model):
         return "<Comment, %s, %d>" % (self.content, self.id)
 
     def get_sub_comments(self):
-        print(self.content_object.id, self.id, self.object_id)
-        # | Q(self.content_object.content_type_id = self.object_id)
-        subcomment = Comment.objects.filter(Q(object_id = self.id)  
-             | (Q(object_id = self.object_id) ));
+        content_type = ContentType.objects.get_for_model(self)
+        comment_comments = Comment.objects.filter(content_type = content_type)
+   
+        result_comments = []
+        do_recursive_find(comment_comments, self.id, 0, result_comments)
 
-        return subcomment
+        #逆序输出
+        return result_comments[::-1]
 
     class Meta:
         ordering = ['-created_time']

@@ -16,6 +16,7 @@ def comment(request):
         comm.user = commentForm.cleaned_data['user']
         comm.content = commentForm.cleaned_data['content']
 
+        #comm.
         #获取对象
         comm.content_object = commentForm.cleaned_data['content_object']
         comm.save()

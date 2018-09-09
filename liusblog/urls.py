@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),
     path('ckeditor', include('ckeditor_uploader.urls')),
-    path('comment', comment.views.comment, name='comment'),
+    path('comment/', comment.views.comment, name='comment'),
 ]
 
 #访问MEDIA
