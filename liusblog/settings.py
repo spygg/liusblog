@@ -132,6 +132,31 @@ CKEDITOR_UPLOAD_PATH= "uploader/"
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'skin': 'moono',
+        'toolbar_YourCustomToolbarConfig': [
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']},
+            {'name': 'links', 'items': ['Link', 'Unlink']},
+            {'name': 'insert',
+             'items': ['CodeSnippet', 'Image', 'Table', 'PageBreak']},
+            '/',
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+        ],
+        'toolbar': 'YourCustomToolbarConfig',  # put selected toolbar config here
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'uploadimage', # the upload image feature
+            'div',
+            'autolink',
+            'autoembed',
+            'embedsemantic',
+            'autogrow',
+            'widget',
+            'dialog',
+            'lineutils',
+            'codesnippet'
+        ]),
+        'codeSnippet_theme': 'atelier-dune.dark',
     },
     
     'comment_ckeditor': {
