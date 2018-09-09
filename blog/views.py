@@ -191,6 +191,8 @@ def login(request):
     
     context = {}
     context['loginForm'] = loginForm
+    context['blog_types'] = BlogType.objects.all()
+
     return render(request, 'login.html', context)
 
 
@@ -217,15 +219,17 @@ def register(request):
     
     context = {}
     context['registerForm'] = registerForm
+    context['blog_types'] = BlogType.objects.all()
     return render(request, 'register.html', context)
 
 def userinfo(request):
     context = {}
-  
+    context['blog_types'] = BlogType.objects.all()
     return render(request, 'userinfo.html', context)
 
 def bindemail(request):
     context = {}
+    context['blog_types'] = BlogType.objects.all()
     return render(request, 'userinfo.html', context)
 
 
@@ -254,4 +258,5 @@ def resetpasswd(request):
     context = {}
     context['resetPassWdForm'] = resetPassWdForm
     context['info'] = info
+    context['blog_types'] = BlogType.objects.all()
     return render(request, 'resetpasswd.html', context)

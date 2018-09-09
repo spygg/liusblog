@@ -28,7 +28,15 @@ class Blog(models.Model):
     title = models.CharField(max_length = 100)
     blog_type = models.ForeignKey(BlogType, on_delete = models.CASCADE)
     author = models.ForeignKey(User, on_delete = models.CASCADE)
-    content = RichTextUploadingField()
+    content = RichTextUploadingField(
+                                    # extra_plugins=['syntaxhighlight'],
+                                    # # CKEDITOR.plugins.addExternal(...)
+                                    # external_plugin_resources=[(
+                                    #     'syntaxhighlight',
+                                    #     '/static/ckeditor/ckeditor/plugins/syntaxhighlight/',
+                                    #     'plugin.js',
+                                    # )],
+                                )
     
     # read_number = models.ForeignKey(ReadNumber, on_delete = models.CASCADE)
     created_time = models.DateTimeField(auto_now_add = True)

@@ -131,6 +131,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 CKEDITOR_UPLOAD_PATH= "uploader/"
 
 CKEDITOR_CONFIGS = {
+    'default': {
+    },
+    
     'comment_ckeditor': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
