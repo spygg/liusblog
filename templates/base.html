@@ -112,7 +112,7 @@
                     <span class="caret"></span>
                   </a>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'userinfo' %}">个人资料</a></li>
+                    <li><a href="{% url 'userinfo' %}?username={{ request.user.username }}">个人资料</a></li>
                     <li><a href="#">消息</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="{% url 'logout' %}">退出</a></li>

@@ -21,8 +21,23 @@ class LoginForm(forms.Form):
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=50, min_length=3, widget = forms.TextInput(attrs={'class':'form-control', 'placeholder':'请输入3-30用户名'}))
     email = forms.EmailField(widget = forms.EmailInput(attrs={'class':'form-control', 'placeholder':'请输入邮箱'}))
+    verify_code = forms.CharField(widget = forms.TextInput(attrs={'class':'form-control', 'placeholder':'请输入验证码'}))
     password = forms.CharField(min_length = 6, widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'请输入密码'}))
     password_again = forms.CharField(min_length = 6, widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'请再次输入密码'}))
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+        super(RegisterForm, self).__init__(*args, **kwargs)
+
+    def clean_verify_code(self):
+        code = self.request.session.get('verify_code', '')
+        verify_code = self.cleaned_data.get('verify_code', '')
+
+        if code != verify_code:
+            raise forms.ValidationError('验证码错误!')
+            
+        return self.cleaned_data;
 
     def clean_username(self):
         username = self.cleaned_data['username']

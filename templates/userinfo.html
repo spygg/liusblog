@@ -30,6 +30,8 @@
 {% endblock %}
 
 {% block main_area %}
+
+    
     <div class="container">
         <div class="row">
             <div class="register-area col-md-6 col-md-offset-3">
@@ -38,36 +40,51 @@
                         <h3 class="panel-title">用户信息</h3>
                     </div>
                     <div class="panel-body">
-                        
-                        <ul>
-                            <li>
-                                用户名: {{ user.username }}
-                            </li>
+                        {% if user.is_authenticated %}
+                            <ul>
+                                <li>
+                                    用户名: {{ userInfo.username }}
+                                </li>
 
-                            <li>
-                                邮 箱:
-                                 {% if user.email %}
-                                    <label>{{ user.email }}</label>
-                                {% else %}
-                                    未绑定
-                                {% endif %}
-                                
-                                {% if not user.is_bind %}
-                                    <a href="#">验证邮箱 </a>
-                                {% endif %}
-                            </li>
+                                <li>
+                                    邮 箱:
+                                     {% if userInfo.email %}
+                                        <label>{{ userInfo.email }}</label>
+                                    {% else %}
+                                        未绑定
+                                    {% endif %}
+                                    
+                                    {% ifequal userInfo request.user %}
+                                        {% if not userInfo.is_bind %}
+                                            <a href="#">验证邮箱 </a>
+                                        {% endif %}
+                                    {% endifequal %}
+                                </li>
 
-                            <li>
-                                最后登录时间: {{ user.last_login|date:"Y-m-d, G:i:s" }}
-                            </li>
-                        </ul>
+                                <li>
+                                    最后登录时间: {{ userInfo.last_login|date:"Y-m-d, G:i:s" }}
+                                </li>
+                            </ul>
+                        {% else %}
+                            <div>
+                                <strong>您尚未登录无权查看其他用户信息~~</strong>
+                            </div>
+                            <div style="margin-top: 1em;">
+                                <a href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+                                <span>或</span>
+                                <a href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a>
+                            </div>
+                        {% endif %}
                        
                     </div>
+                     
+                    {% ifequal userInfo request.user %}   
+                        <div class="panel-footer">
+                            <a  class="tip-info" href="#">修改密码</a>
+                            <a  class="tip-info" href="#">退出登录</a>
+                        </div>
+                    {% endifequal %}
 
-                     <div class="panel-footer">
-                        <a  class="tip-info" href="#">修改密码</a>
-                        <a  class="tip-info" href="#">退出登录</a>
-                     </div>
                 </div>
             </div>
         </div>    

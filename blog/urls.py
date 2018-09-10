@@ -25,10 +25,11 @@ urlpatterns = [
     path('thridpaty_login/<str:type>', views.thridpaty_login, name='thridpaty_login'),
     path('register/', views.register, name='register'),
     path('userinfo/', views.userinfo, name='userinfo'),
-    path('bindemail/', views.bindemail, name='bindemail'),
+    path('verify/', views.verify, name='verify'),
+    path('logout/', views.logout, name='logout'),
     path('resetpasswd/', views.resetpasswd, name='resetpasswd'),
     path('logout/', views.logout, name='logout'),
-
+    
 
     #Test google search
     #path('google/<str:keyworkd>', views.google, name='google'),
