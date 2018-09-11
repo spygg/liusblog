@@ -39,6 +39,7 @@ class Comment(models.Model):
         result_comments = []
         do_recursive_find(comment_comments, self.id, 0, result_comments)
 
+        self.comment_account = len(result_comments)
         #逆序输出
         return result_comments[::-1]
 

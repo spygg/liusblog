@@ -187,9 +187,12 @@
         </div>
       {% endif %}
       
+      
+      <input id='reply_username' type='text'>
+      <input id='reply_div_id' type='text'>
       <div id='comment_list' class="comment-list clearfix">
         {% for comment in comments %}
-          <div  class='comment well clearfix'>
+          <div  id='id_{{ comment.id }}' class='comment well clearfix'>
             <div class="col-xs-1 comment-user-img">
               {% if comment.user.avatar %}
                 <a href="{% url 'userinfo' %}?username={{ comment.user.username }}">
@@ -212,14 +215,13 @@
                 本文
               </strong>
               ({{ comment.created_time|date:"Y-m-d, G:i:s" }})
-              <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ comment.id }})">回复</a>
+              <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ comment.id }}, '{{ comment.user.username }}', {{ comment.id }})">回复</a>
               <div>
                 {{ comment.content|safe }}
               </div>
              
-             
               <!-- 子评论开始 -->
-              <div id='sub_comment_list' class="comment-list clearfix" style="">
+              <div id='id_{{ comment.id }}_sub_comment_list' class="comment-list clearfix" style="">
                 {% for subcomment in comment.get_sub_comments %}
                   <div  class='comment well clearfix'>
                     <div class="col-xs-1 comment-user-img">
@@ -247,7 +249,7 @@
                         </a>
                       </strong>
                       ({{ subcomment.created_time|date:"Y-m-d, G:i:s" }})
-                      <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ subcomment.id }})">
+                      <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ subcomment.id }}, '{{ subcomment.user.username }}', {{ comment.id }})">
                         回复
                       </a>
                       <div>
@@ -282,11 +284,12 @@
 <!-- 页内javascript区域 -->
 {% block scriptextends %}
   <script type="text/javascript">
-    function setFormObjectValue(content_type, object_id){
+    function setFormObjectValue(content_type, object_id, reply_username, reply_div_id){
       //设置id_content_type和id_object_id
       $('#id_content_type').val(content_type.toString());
       $('#id_object_id').val(object_id.toString());
-
+      $('#reply_username').val(reply_username.toString())
+      $('#reply_div_id').val(reply_div_id.toString())
 
       $("html,body").animate({
           scrollTop: $('.comment-commit-area').offset().top - $('#nav-area').height() - 5
@@ -299,32 +302,63 @@
 
     }
 
-    function reply(username, created_time, content){
-      // <div  class='comment well clearfix'>
-      //   <div class="col-xs-1 comment-user-img">
-      //     {% if subcomment.user.avatar %}
-      //       <img src="/static/imgs/default.png">
-      //     {% else %}
-      //       <img src="https://dummyimage.com/60x60/,  333333/ffffff&text={{ subcomment.user.username }}"/>
-      //     {% endif %}
-      //   </div>
+
+    //函数稍微有点问题
+    function reply(username, created_time, content, id, reply_name, reply_div_id){
+      var alink = '<a href="{% url 'userinfo' %}?username=' + username + '">'
+      var div_id = ' '
+
+      if(reply_name == '本文'){
+        div_id = " id=" + 'id_' + reply_div_id;
+      }
+      
+
+      var coment_html = 
+      
+      '<div' + div_id + ' class="comment well clearfix">' + 
+        '<div class="col-xs-1 comment-user-img">' + 
+          '{% if subcomment.user.avatar %}' +
+            alink +
+            '<img src="/static/imgs/default.png">' + 
+            '</a>' + 
+          '{% else %}' + 
+            alink + 
+            '<img src="https://dummyimage.com/60x60/333333/ffffff&text=' + username + '"' + '/>' + 
+            '</a>' + 
+          '{% endif %}' + 
+        '</div>' + 
         
-      //   <div class="col-xs-11">
-      //     <strong>
-      //       {{ subcomment.user.username }} 
-      //     </strong>&nbsp
-      //     @<strong>
-      //      {{ comment.user.username }}
-      //     </strong>
-      //     ({{ subcomment.created_time|date:"Y-m-d, G:i:s" }})
-      //     <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ subcomment.id }})">
-      //       回复
-      //     </a>
-      //     <div>
-      //       {{ subcomment.content|safe }}
-      //     </div>
-      //   </div>
-      // </div>
+        '<div class="col-xs-11">' + 
+          '<strong>' + 
+            alink + 
+            username +
+            '</a>' + 
+          '</strong>&nbsp' +
+          '@<strong>' +
+           reply_name +
+          '</strong>' +
+          '(' +  created_time + ')' +
+          '<a class="reply-comment" href="javascript:setFormObjectValue(\'comment\',' + id + ',' + '\'' + username +  '\'' + ',' + reply_div_id + ')">' +
+            '回复' +
+          '</a>' +
+          '<div>' +
+            content +
+          '</div>' +
+        '</div>'
+
+      if(reply_name == '本文'){
+        div_id = " id=" + 'id_' + reply_div_id;
+        coment_html += '<div' + div_id + '_sub_comment_list ' + ' class="comment-list clearfix">';
+        coment_html += '</div>';
+      }
+
+      coment_html += '</div>'
+
+
+
+      console.log(coment_html);
+      // alert(coment_html);
+      return coment_html;
     }
 
     $("#comment_form").submit(function(){
@@ -339,19 +373,34 @@
         cache: false,
         success: function(data){
           if (data['status'] == 'SUCCESS'){
-            console.log(data)
-            var coment_html = '<div> '+ data['username'] + ' ('+ data['created_time'] +'): '+ data['content'] +' </div>';
+            var reply_name = '本文';
+            var reply_div_id = $('#reply_div_id').val()
 
+            if('{{ blog_content_type }}' != data['content_type']){
+              reply_name = $('#reply_username').val()
+            }
+            else{
+              reply_div_id = data['pk']
+            }
+
+            
+            var coment_html = reply(data['username'], data['created_time'], data['content'], data['pk'], reply_name, reply_div_id);
             // 插入评论
-            $("#comment_list").prepend(coment_html);
+            if('{{ blog_content_type }}' == data['content_type']){
+              $("#comment_list").prepend(coment_html);
+            }
+            else{
+              var id = '#id_' + $('#reply_div_id').val() + '_sub_comment_list';
+              $(id).append(coment_html);
+            }
 
             // 程序复位
             CKEDITOR.instances['id_content'].setData('');
             $('#comment_error').text('');
 
             // 恢复模型
-            $('#id_content_type').val({{ blog_content_type }});
-            $('#id_object_id').val({{ article.pk }});
+            $('#id_content_type').val('{{ blog_content_type }}');
+            $('#id_object_id').val('{{ article.pk }}');
           }
           else{
             $('#comment_error').text(data['message']);

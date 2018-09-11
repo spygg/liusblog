@@ -21,10 +21,13 @@ def comment(request):
         comm.content_object = commentForm.cleaned_data['content_object']
         comm.save()
 
+
         data['status'] = 'SUCCESS'
         data['username'] = comm.user.username
         data['created_time'] = comm.created_time.strftime('%Y-%m-%d %H:%M:%S')
         data['content'] = comm.content
+        data['pk'] = comm.pk
+        data['content_type'] = commentForm.cleaned_data['content_type']
         #return redirect(refer)
     else:
         data['status'] = 'ERROR'
