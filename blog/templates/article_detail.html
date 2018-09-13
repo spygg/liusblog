@@ -42,7 +42,7 @@
       <span>阅读 {{ article.read_number }} </span>
 
       <span>
-          <a href="#" target="#" title="查看文章评论">评论 7</a>
+          <a href="javascript:seeComment()" target="#" title="查看文章评论">评论 7</a>
       </span>
       <span class="pull-right">
         <a class = "modify_article" href="#" title="修改文章">
@@ -189,11 +189,11 @@
 
     <!-- 评论区域 -->
     <div class="comment-list-area">
-      {% if comments%}  
+<!--       {% if comments%}  
         <div class="comment-tips">
           2 人参与 | 2 条评论
         </div>
-      {% endif %}
+      {% endif %} -->
       
       
 
@@ -294,6 +294,15 @@
 <!-- 页内javascript区域 -->
 {% block scriptextends %}
   <script type="text/javascript">
+    
+    function seeComment(){
+          $("html,body").animate({
+          scrollTop: $('#comment_list').offset().top - $('#nav-area').height() - 5
+        },
+        100
+      )
+    }
+
     function setFormObjectValue(content_type, object_id, reply_username, reply_div_id){
       //设置id_content_type和id_object_id
       $('#id_content_type').val(content_type.toString());
@@ -310,7 +319,13 @@
         },
         100, //时间
         function(){
-          CKEDITOR.instances['id_content'].focus();
+          try{
+            CKEDITOR.instances['id_content'].focus();
+          }
+          catch(err){
+            console.log('尚未登录!');
+          }
+          
         }
       )
 

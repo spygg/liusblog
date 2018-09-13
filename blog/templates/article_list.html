@@ -148,12 +148,12 @@
                     {{ article.created_time|date:"Y-m-d" }}
                   </span>
                   <span class="item comment-num">
-                    <a href="#" target="_blank" title="查看文章评论">
+                    
                       <i class="fa fa-comments">
                       </i>
+                      33
                       {# 评论数 #}
                       
-                    </a>
                   </span>
                   <span>
                     <a href="{% url 'article_detail' %}?id={{ article.id }}&blog_type={{ blog_type }}" class="show-all-aritle pull-right">阅读&gt;&gt;</a>
