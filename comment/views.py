@@ -28,6 +28,8 @@ def comment(request):
         data['content'] = comm.content
         data['pk'] = comm.pk
         data['content_type'] = commentForm.cleaned_data['content_type']
+        data['user_num'] = 33
+        data['comment_num'] = 69
         #return redirect(refer)
     else:
         data['status'] = 'ERROR'

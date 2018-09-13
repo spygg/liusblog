@@ -42,7 +42,7 @@
       <span>阅读 {{ article.read_number }} </span>
 
       <span>
-          <a href="javascript:seeComment()" target="#" title="查看文章评论">评论 7</a>
+          <a id='seeComment' href="javascript:seeComment()" title="查看文章评论">评论 7</a>
       </span>
       <span class="pull-right">
         <a class = "modify_article" href="#" title="修改文章">
@@ -189,11 +189,11 @@
 
     <!-- 评论区域 -->
     <div class="comment-list-area">
-<!--       {% if comments%}  
+      {% if comments%}  
         <div class="comment-tips">
           2 人参与 | 2 条评论
         </div>
-      {% endif %} -->
+      {% endif %}
       
       
 
@@ -339,9 +339,7 @@
         div_id = " id=" + 'id_' + reply_div_id;
       }
       
-
       var coment_html = 
-      
       '<div' + div_id + ' class="comment well clearfix">' + 
         '<div class="col-xs-1 comment-user-img">' + 
           '{% if subcomment.user.avatar %}' +
@@ -421,6 +419,13 @@
               $(id).append(coment_html);
             }
 
+
+            //更新程序计数
+            var comment_num_info = data['user_num'] + ' 人参与 | ' + data['comment_num'] + ' 条评论';
+            console.log(comment_num_info)
+            $('.comment-tips').text(comment_num_info)
+
+            $('#seeComment').text('评论 ' + data['comment_num'])
             // 程序复位
             CKEDITOR.instances['id_content'].setData('');
             $('#comment_error').text('');
