@@ -136,14 +136,22 @@
   <!-- 用户登录区域 -->
   <div class="well comment-area clearfix">
     <div class="comment-commit-area">
-      {% if user.is_authenticated %}
-        
+      <input id='reply_username' type='hidden'>
+      <input id='reply_div_id' type='hidden'>
+      
+      {% if user.is_authenticated %}  
         <div class="login-status clearfix">
            <form id="comment_form" method="POST" action="">
             {% csrf_token %} 
             <strong>
               {{ user.username }}
             </strong>欢迎评论~
+            
+            <!-- 回复内容提示 -->
+            <div id='comment-reply-who-tip' class='well clearfix' style="display:none">
+              
+            </div>
+
             {% for field in commentForm %}
               {{ field }}
               <p class="text-danger">
@@ -188,8 +196,7 @@
       {% endif %}
       
       
-      <input id='reply_username' type='text'>
-      <input id='reply_div_id' type='text'>
+
       <div id='comment_list' class="comment-list clearfix">
         {% for comment in comments %}
           <div  id='id_{{ comment.id }}' class='comment well clearfix'>
@@ -216,7 +223,7 @@
               </strong>
               ({{ comment.created_time|date:"Y-m-d, G:i:s" }})
               <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ comment.id }}, '{{ comment.user.username }}', {{ comment.id }})">回复</a>
-              <div>
+              <div id='id_{{ comment.id }}_content'>
                 {{ comment.content|safe }}
               </div>
              
@@ -252,7 +259,7 @@
                       <a class="reply-comment" href="javascript:setFormObjectValue('comment', {{ subcomment.id }}, '{{ subcomment.user.username }}', {{ comment.id }})">
                         回复
                       </a>
-                      <div>
+                      <div id='id_{{ subcomment.id }}_content'>
                         {{ subcomment.content|safe }}
                       </div>
                     </div>
@@ -263,7 +270,10 @@
             </div><!-- 评论某一篇博客结束,请注意endfor之前有两个</div> -->
           </div>
         {% empty %}
-          暂无评论,赶紧抢沙发~~~~
+          <div id='comment-is-empty'>
+            暂无评论,赶紧抢沙发~~~~
+          </div>
+          
         {% endfor %}
       </div> 
     </div>
@@ -291,6 +301,10 @@
       $('#reply_username').val(reply_username.toString())
       $('#reply_div_id').val(reply_div_id.toString())
 
+      var tipInfo = reply_username + '说:' + $('#id_' + object_id + '_content').text()
+      $('#comment-reply-who-tip').text(tipInfo);
+      $('#comment-reply-who-tip').show();
+
       $("html,body").animate({
           scrollTop: $('.comment-commit-area').offset().top - $('#nav-area').height() - 5
         },
@@ -302,8 +316,6 @@
 
     }
 
-
-    //函数稍微有点问题
     function reply(username, created_time, content, id, reply_name, reply_div_id){
       var alink = '<a href="{% url 'userinfo' %}?username=' + username + '">'
       var div_id = ' '
@@ -333,30 +345,30 @@
             alink + 
             username +
             '</a>' + 
-          '</strong>&nbsp' +
-          '@<strong>' +
+          '</strong>&nbsp  ' +
+          '@ <strong>' +
            reply_name +
           '</strong>' +
           '(' +  created_time + ')' +
           '<a class="reply-comment" href="javascript:setFormObjectValue(\'comment\',' + id + ',' + '\'' + username +  '\'' + ',' + reply_div_id + ')">' +
             '回复' +
           '</a>' +
-          '<div>' +
+          '<div' + ' id=id_' + id + '_content' + '>' +
             content +
-          '</div>' +
-        '</div>'
+          '</div>'
 
+      // 在col-xs-11里面这样就可以错开一个头像的距离
       if(reply_name == '本文'){
         div_id = " id=" + 'id_' + reply_div_id;
         coment_html += '<div' + div_id + '_sub_comment_list ' + ' class="comment-list clearfix">';
         coment_html += '</div>';
       }
 
+      // 请注意这里是两个div
+      coment_html += '</div>'
       coment_html += '</div>'
 
-
-
-      console.log(coment_html);
+      // console.log(coment_html);
       // alert(coment_html);
       return coment_html;
     }
@@ -397,6 +409,9 @@
             // 程序复位
             CKEDITOR.instances['id_content'].setData('');
             $('#comment_error').text('');
+            $('#comment-reply-who-tip').text('');
+            $('#comment-reply-who-tip').hide();
+
 
             // 恢复模型
             $('#id_content_type').val('{{ blog_content_type }}');
@@ -414,23 +429,10 @@
       return false;
     });
 
-  //点击回复跳转到编辑框
-  // $(".reply-comment").each(function(){
-  //   //把标签转义
-  //   $(this).click(function(event) {
-  //     //if($(id_text).offset() != undefined)
-  //     {
-  //         $("html,body").animate({
-  //             scrollTop: $('.comment-commit-area').offset().top - $('#nav-area').height() - 5
-  //           },
-  //           100, //时间
-  //           function(){
-  //             CKEDITOR.instances['id_content'].focus();
-  //           }
-  //         )
-  //     }
-  //   });
-  // });
+
+    // $("code").each(function(){
+    //   $(this).html("<ul><li>" + $(this).html().replace(/\n/g,"\n</li><li>") +"\n</li></ul>");
+    // });
 
   </script>
 {% endblock %}
