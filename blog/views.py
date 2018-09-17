@@ -138,6 +138,8 @@ def article_detail(request):
         blog.plus_read_number();
 
     context['url'] = request.get_raw_uri()
+
+    #在上一篇和下一篇文章时,这里区分是按时间还是按博客类型进行区分
     if blog_type:
         blog_prev = Blog.objects.filter(blog_type__type_name = blog_type, created_time__gt = blog.created_time).last()  
         blog_next = Blog.objects.filter(blog_type__type_name = blog_type, created_time__lt = blog.created_time).first()
@@ -154,10 +156,11 @@ def article_detail(request):
     #评论内容区域
     blog_content_type = ContentType.objects.get_for_model(blog)
     # content_type=blog_content_type, 
-    comments = Comment.objects.filter(object_id = blog.pk)
+    comments = Comment.objects.filter(object_id = blog.pk, content_type = blog_content_type)
     context['comments'] = comments
-    context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':  blog.pk})
+    context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':blog.pk, 'reply_comment_id': 0})
     context['blog_content_type'] = blog_content_type
+
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)
     return response
@@ -189,8 +192,7 @@ def login(request):
             auth.login(request, user)
             return redirect(pre_url)
     else:
-        loginForm = LoginForm()
-    
+        loginForm = LoginForm()   
     context = {}
     context['loginForm'] = loginForm
     context['blog_types'] = BlogType.objects.all()
@@ -199,8 +201,7 @@ def login(request):
 
 
 def register(request):
-    if request.method == 'POST':
-        
+    if request.method == 'POST':     
         registerForm = RegisterForm(request.POST, request = request)
 
         if registerForm.is_valid():

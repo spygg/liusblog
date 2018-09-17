@@ -166,71 +166,75 @@
     {% endfor %}
 
     {# 分页页码开始 #}
-    <nav id="pagination" aria-label="Page navigation">
-      <ul class="pagination">
-        
-        <!--上一页-->
-        {% if article_list.has_previous %}
-          <li>
-            {% if blog_type %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
-            {% elif month and year %}
-              <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
-            {% else %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
-            {% endif %}
-
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-        {% else %}
-          <li>
-              <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&laquo;</span>
-          </li>
-        {% endif %}
- 
-        <!--遍历显示每一个页码-->
-
-        {% for num in page_nums%}
-          {% ifequal num|stringformat:'i'  current_page %}
-            <li class="active">
-          {% else%}
+    {% if article_num %}
+      <nav id="pagination" aria-label="Page navigation">
+        <ul class="pagination">
+          
+          <!--上一页-->
+          {% if article_list.has_previous %}
             <li>
-          {% endifequal %}
-  
-            {% if blog_type %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ num }}">
-            {% elif month and year %}
-               <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ num }}">
-            {% else %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ num }}">
-            {% endif %}
-            {{ num }}
-            </a>
-          </li>
-        {% endfor %}
-      
-        <!--下一页-->
-        {% if article_list.has_next %}
-          <li>
-            {% if blog_type %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.next_page_number }}"  aria-label="Next">
-            {% elif  month and year %}
-              <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ article_list.next_page_number }}" aria-label="Next">
-            {% else %}
-              <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.next_page_number }}" aria-label="Next">
-            {% endif %}
+              {% if blog_type %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
+              {% elif month and year %}
+                <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
+              {% else %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.previous_page_number }}" aria-label="Previous">
+              {% endif %}
 
-                <span aria-hidden="true">&raquo;</span>
+                <span aria-hidden="true">&laquo;</span>
               </a>
-          </li>
-        {% else %}
-          <li>
-              <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&raquo;</span>
-          </li>
-        {% endif %}
-      </ul>
-    </nav>
+            </li>
+          {% else %}
+            <li>
+                <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&laquo;</span>
+            </li>
+          {% endif %}
+   
+          <!--遍历显示每一个页码-->
+
+          {% for num in page_nums%}
+            {% ifequal num|stringformat:'i'  current_page %}
+              <li class="active">
+            {% else%}
+              <li>
+            {% endifequal %}
+    
+              {% if blog_type %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ num }}">
+              {% elif month and year %}
+                 <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ num }}">
+              {% else %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ num }}">
+              {% endif %}
+              {{ num }}
+              </a>
+            </li>
+          {% endfor %}
+        
+          <!--下一页-->
+          {% if article_list.has_next %}
+            <li>
+              {% if blog_type %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.next_page_number }}"  aria-label="Next">
+              {% elif  month and year %}
+                <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}&page_id={{ article_list.next_page_number }}" aria-label="Next">
+              {% else %}
+                <a href="{% url 'article_list' %}?blog_type={{ blog_type }}&page_id={{ article_list.next_page_number }}" aria-label="Next">
+              {% endif %}
+
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+          {% else %}
+            <li>
+                <span style="background-color: #eee; border-color: #ddd;"aria-hidden="true">&raquo;</span>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% else %}
+      <div style="padding: 1em; text-align: center; font-size: 1.6em;">尚无文章,敬请期待!!</div>
+    {% endif %}
     {# 分页页码结束 #}
   
   </div>

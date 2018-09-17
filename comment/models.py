@@ -8,40 +8,42 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.db.models.query import QuerySet
 
-#递归查找所有子评论
-def do_recursive_find(comment_list, parent_id, level, result_list):
-    level += 1
-    for comment in comment_list:
-        if comment.object_id == parent_id:
-            result_list.insert(0, comment)
-            do_recursive_find(comment_list, comment.id, level, result_list)
+# 递归查找所有子评论
+# def do_recursive_find(comment_list, parent_id, level, result_list):
+#     level += 1
+#     for comment in comment_list:
+#         if comment.object_id == parent_id:
+#             result_list.insert(0, comment)
+#             do_recursive_find(comment_list, comment.id, level, result_list)
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    created_time = models.DateTimeField(auto_now_add = True)
+    created_time = models.DateTimeField(auto_now_add=True)
 
-    #评论的类型
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    #某个类型的索引
     object_id = models.PositiveIntegerField()
-    #对应具体某个评论对象
     content_object = GenericForeignKey('content_type', 'object_id')
+
+    #某个子评论的根ID等于本博客评论的ID
+    root_id = models.IntegerField(default=0)
+    #回复谁的ID
+    reply_to_id = models.IntegerField(default=0)
+
+    def get_subcomments(self):
+        sub_comments = Comment.objects.filter(root_id=self.id)
+        return sub_comments
+
+    # root = models.ForeignKey(
+    #     'self', related_name='root_comment', null=True, on_delete=models.CASCADE)
+    # parent = models.ForeignKey(
+    #     'self', related_name='parent_comment', null=True, on_delete=models.CASCADE)
+    # reply_to = models.ForeignKey(
+    #     User, related_name="replies", null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return "<Comment, %s, %d>" % (self.content, self.id)
-
-    def get_sub_comments(self):
-        content_type = ContentType.objects.get_for_model(self)
-        comment_comments = Comment.objects.filter(content_type = content_type)
-   
-        result_comments = []
-        do_recursive_find(comment_comments, self.id, 0, result_comments)
-
-        self.comment_account = len(result_comments)
-        #逆序输出
-        return result_comments[::-1]
 
     class Meta:
         ordering = ['-created_time']
