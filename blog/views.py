@@ -158,7 +158,11 @@ def article_detail(request):
     # content_type=blog_content_type, 
     comments = Comment.objects.filter(object_id = blog.pk, content_type = blog_content_type)
     context['comments'] = comments
-    context['commentForm'] = CommentForm(initial = {'content_type':blog_content_type.model, 'object_id':blog.pk, 'reply_comment_id': 0})
+    context['commentForm'] = CommentForm(initial = {
+        'content_type':blog_content_type.model,
+        'object_id':blog.pk,
+        'reply_comment_id': 0
+        })
     context['blog_content_type'] = blog_content_type
 
     response = render(request, 'article_detail.html', context) 
@@ -246,7 +250,7 @@ def bindemail(request):
 def verify(request):
     data = {}
     code = ''.join(random.sample(string.ascii_letters + string.digits, 4))
-    print(code)
+#    print(code)
     email = request.GET.get('email', '')
     request.session['verify_code'] = code
 

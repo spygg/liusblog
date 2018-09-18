@@ -245,8 +245,8 @@
                         </a>
                       </strong>&nbsp
                       @<strong>
-                        <a href="{% url 'userinfo' %}?username={{ subcomment.user.username }}">
-                          {{ subcomment.reply_to.username }}
+                        <a href="{% url 'userinfo' %}?username={{ subcomment.get_reply.user.username  }}">
+                          {{ subcomment.get_reply.user.username }}
                         </a>
                       </strong>
                       ({{ subcomment.created_time|date:"Y-m-d, G:i:s" }})
@@ -292,6 +292,9 @@
       $('#comment-reply-who-tip').text(tipInfo);
       $('#comment-reply-who-tip').show();
 
+      //设置reply_comment_id为object_id
+      $('#reply_comment_id').val(reply_comment_id);
+
       //跳转到回复框
       $("html,body").animate({
           scrollTop: $('.comment-commit-area').offset().top - $('#nav-area').height() - 5
@@ -317,41 +320,14 @@
         300
       )
     }
-    /*
-    function setFormObjectValue(content_type, object_id, reply_username, reply_div_id){
-      //设置id_content_type和id_object_id
-      $('#id_content_type').val(content_type.toString());
-      $('#id_object_id').val(object_id.toString());
-      $('#reply_username').val(reply_username.toString())
-      $('#reply_div_id').val(reply_div_id.toString())
 
-      var tipInfo = reply_username + '说:' + $('#id_' + object_id + '_content').text()
-      $('#comment-reply-who-tip').text(tipInfo);
-      $('#comment-reply-who-tip').show();
 
-      $("html,body").animate({
-          scrollTop: $('.comment-commit-area').offset().top - $('#nav-area').height() - 5
-        },
-        100, //时间
-        function(){
-          try{
-            CKEDITOR.instances['id_content'].focus();
-          }
-          catch(err){
-            console.log('尚未登录!');
-          }
-          
-        }
-      )
-
-    }
-
-    function reply(username, created_time, content, id, reply_name, reply_div_id){
+    function formatter_reply_string(username, created_time, content, id, reply_user_name, reply_for_blog_top_id){
       var alink = '<a href="{% url 'userinfo' %}?username=' + username + '">'
       var div_id = ' '
 
-      if(reply_name == '本文'){
-        div_id = " id=" + 'id_' + reply_div_id;
+      if(reply_user_name == '本文'){
+        div_id = " id=" + 'id_' + reply_for_blog_top_id;
       }
       
       var coment_html = 
@@ -375,10 +351,10 @@
             '</a>' + 
           '</strong>&nbsp  ' +
           '@ <strong>' +
-           reply_name +
+           reply_user_name +
           '</strong>' +
           '(' +  created_time + ')' +
-          '<a class="reply-comment" href="javascript:setFormObjectValue(\'comment\',' + id + ',' + '\'' + username +  '\'' + ',' + reply_div_id + ')">' +
+          '<a class="reply-comment" href="javascript:setFormObjectValue('  +  '\'' + username +  '\'' + ',' +  id + ')">' +
             '回复' +
           '</a>' +
           '<div' + ' id=id_' + id + '_content' + '>' +
@@ -386,8 +362,8 @@
           '</div>'
 
       // 在col-xs-11里面这样就可以错开一个头像的距离
-      if(reply_name == '本文'){
-        div_id = " id=" + 'id_' + reply_div_id;
+      if(reply_user_name == '本文'){
+        div_id = " id=" + 'id_' + reply_for_blog_top_id;
         coment_html += '<div' + div_id + '_sub_comment_list ' + ' class="comment-list clearfix">';
         coment_html += '</div>';
       }
@@ -398,11 +374,13 @@
 
       return coment_html;
     }
-*/
-    $("#comment_form").submit(function(){
+
+    $("#comment_form").submit(function(event){
+      //阻止默认行为
+      event.preventDefault();
+
       //更新数据
       CKEDITOR.instances['id_content'].updateElement();
-      
       //异步提交
       $.ajax({
         url: "{% url 'comment'%}",
@@ -412,50 +390,42 @@
         success: function(data){
           if (data['status'] == 'SUCCESS'){
             console.log(data)
+
+            var reply_name;
+            var reply_div_id;
+
+            //直接评论博客
+            if(data['root_id'] == '0'){
+              reply_name = '本文';
+              reply_div_id = data['pk']
+            }
+            else{
+              reply_name = data['reply_username'];
+              reply_div_id = data['root_id'];
+            }
+
+            var coment_html = formatter_reply_string(data['username'], data['created_time'], data['content'], data['pk'], reply_name, reply_div_id);
+
+            // 插入博客的评论
+            if(data['root_id'] == '0'){
+              $("#comment_list").prepend(coment_html);
+            }
+            else{//插入评论的评论
+              var id = '#id_' + reply_div_id + '_sub_comment_list';
+              $(id).append(coment_html);
+            }
+
             // 程序复位
             CKEDITOR.instances['id_content'].setData('');
             $('#comment_error').text('');
             $('#comment-reply-who-tip').text('');
             $('#comment-reply-who-tip').hide();
-
-            // var reply_name = '本文';
-            // var reply_div_id = $('#reply_div_id').val()
-
-            // if('{{ blog_content_type }}' != data['content_type']){
-            //   reply_name = $('#reply_username').val()
-            // }
-            // else{
-            //   reply_div_id = data['pk']
-            // }
-
-            
-            // var coment_html = reply(data['username'], data['created_time'], data['content'], data['pk'], reply_name, reply_div_id);
-            // // 插入评论
-            // if('{{ blog_content_type }}' == data['content_type']){
-            //   $("#comment_list").prepend(coment_html);
-            // }
-            // else{
-            //   var id = '#id_' + $('#reply_div_id').val() + '_sub_comment_list';
-            //   $(id).append(coment_html);
-            // }
-
-
+            $('#reply_comment_id').val(0);
             // //更新程序计数
             // var comment_num_info = data['user_num'] + ' 人参与 | ' + data['comment_num'] + ' 条评论';
             // console.log(comment_num_info)
             // $('.comment-tips').text(comment_num_info)
-
             // $('#seeComment').text('评论 ' + data['comment_num'])
-            // // 程序复位
-            // CKEDITOR.instances['id_content'].setData('');
-            // $('#comment_error').text('');
-            // $('#comment-reply-who-tip').text('');
-            // $('#comment-reply-who-tip').hide();
-
-
-            // // 恢复模型
-            // $('#id_content_type').val('{{ blog_content_type }}');
-            // $('#id_object_id').val('{{ article.pk }}');
           }
           else{
             $('#comment_error').text(data['message']);
@@ -466,7 +436,7 @@
         }
       });
       //返回false来阻止默认行为
-      return false;
+      // return false;
     });
 
 

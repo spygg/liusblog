@@ -16,6 +16,12 @@ from django.db.models.query import QuerySet
 #             result_list.insert(0, comment)
 #             do_recursive_find(comment_list, comment.id, level, result_list)
 
+# 回复分两种情况:
+# 1.回复博客,直接设置object_id为"博客id"和content_type,root_id为0
+# 2.回复评论也分两种情况:
+# ①.回复顶级评论,设置root_id为被回复者的"评论id",object_id也一样
+# ②.回复非顶级评论,root_id设置为被回复者的根id(向上追溯),object_id为被回复者的"评论ID"
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,17 +29,28 @@ class Comment(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+
+    # 有两个功能:
+    # 1.设置该值为博客的id
+    # 2.设置该值为某个评论的id
+    # 3.可以用来反向查询某条的回复
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    #某个子评论的根ID等于本博客评论的ID
+    # 某个子评论的根ID等于本博客评论的ID
+    # 1.为0时说明是评论博客
+    # 2.非0则需对应某条博客根评论的id
     root_id = models.IntegerField(default=0)
-    #回复谁的ID
-    reply_to_id = models.IntegerField(default=0)
+    # 回复谁的ID
+    #reply_to_id = models.IntegerField(default=0)
 
     def get_subcomments(self):
         sub_comments = Comment.objects.filter(root_id=self.id)
-        return sub_comments
+        return sub_comments.order_by('created_time')
+
+    def get_reply(self):
+        reply = Comment.objects.get(id=self.object_id)
+        return reply
 
     # root = models.ForeignKey(
     #     'self', related_name='root_comment', null=True, on_delete=models.CASCADE)
@@ -43,7 +60,7 @@ class Comment(models.Model):
     #     User, related_name="replies", null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "<Comment, %s, %d>" % (self.content, self.id)
+        return "<Comment, %s, %d, %d, %d>" % (self.content, self.id, self.object_id, self.root_id)
 
     class Meta:
         ordering = ['-created_time']

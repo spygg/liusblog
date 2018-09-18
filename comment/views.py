@@ -19,15 +19,17 @@ def comment(request):
 
         # 获取对象
         comm.content_object = commentForm.cleaned_data['content_object']
-
-        # comm.root_id =
+        comm.root_id = commentForm.cleaned_data['root_id']
         comm.save()
 
         data['status'] = 'SUCCESS'
         data['username'] = comm.user.username
-        data['created_time'] = comm.created_time.strftime('%Y-%m-%d, %H:%M:%S')
+        data['created_time'] = comm.created_time.strftime(
+            '%Y-%m-%d, %H:%M:%S')
         data['content'] = comm.content
-        # data['pk'] = comm.pk
+        data['root_id'] = comm.root_id
+        data['pk'] = comm.pk
+        data['reply_username'] = comm.get_reply().user.username
         # data['content_type'] = commentForm.cleaned_data['content_type']
         # data['user_num'] = 33
         # data['comment_num'] = 69
