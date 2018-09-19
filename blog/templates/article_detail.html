@@ -38,9 +38,9 @@
       </div>
     </div>
     <div class="article-status">
-      <span>{{ article.created_time|date:"Y-m-d, G:i" }}</span>
+      <span>{{ article.created_time|date:"Y-m-d, G:i" }}</span>&nbsp&nbsp
       <span>阅读 {{ article.read_number }} </span>
-
+      &nbsp&nbsp
       <span>
           <a id='seeComment' href="javascript:seeComment()" title="查看文章评论">评论 7</a>
       </span>
@@ -148,7 +148,7 @@
             <div id='comment-reply-who-tip' class='well clearfix' style="display:none">
               
             </div>
-
+            {% get_comment_form article as commentForm%}
             {% for field in commentForm %}
               {{ field }}
               <p class="text-danger">
@@ -186,13 +186,15 @@
 
     <!-- 评论区域 -->
     <div class="comment-list-area">
-      {% if comments%}  
+      
         <div class="comment-tips">
-          2 人参与 | 2 条评论
+          {{ article }} 人参与 | {{ article }} 条评论
+          <!-- <span>评论列表:</span> -->
         </div>
-      {% endif %}
+      
       
       <div id='comment_list' class="comment-list clearfix">
+        {% get_top_comments article as comments %}
         {% for comment in comments %}
           <div  id='id_{{ comment.id }}' class='comment well clearfix'>
             <div class="col-xs-1 comment-user-img">
@@ -203,6 +205,7 @@
               {% else %}
                 <a href="{% url 'userinfo' %}?username={{ comment.user.username }}">
                   <img src="https://dummyimage.com/60x60/333333/eeeeee&text={{ comment.user.username }}"/>
+                  <!-- <div class="div_for_name">{{ comment.user.username }}</div> -->
                 </a>
               {% endif%}
             </div>
@@ -223,7 +226,8 @@
              
               <!-- 子评论开始 -->
               <div id='id_{{ comment.id }}_sub_comment_list' class="comment-list clearfix" style="">
-                {% for subcomment in comment.get_subcomments %}
+                {% get_subcomments comment as submcomments %}  
+                {% for subcomment in submcomments %}
                   <div  class='comment well clearfix'>
                     <div class="col-xs-1 comment-user-img">
                       {% if subcomment.user.avatar %}
@@ -233,6 +237,7 @@
                       {% else %}
                         <a href="{% url 'userinfo' %}?username={{ subcomment.user.username }}">
                           <img src="https://dummyimage.com/60x60/333333/ffffff&text={{ subcomment.user.username }}"/>
+                          <!-- <div class="div_for_name">{{ subcomment.user.username }}</div> -->
                         </a>
                         <!-- <img src="/static/imgs/default.png"> -->
                       {% endif %}
@@ -245,8 +250,9 @@
                         </a>
                       </strong>&nbsp
                       @<strong>
-                        <a href="{% url 'userinfo' %}?username={{ subcomment.get_reply.user.username  }}">
-                          {{ subcomment.get_reply.user.username }}
+                        {% get_reply_username subcomment as reply_username %}
+                        <a href="{% url 'userinfo' %}?username={{ reply_username }}">
+                          {{ reply_username }}
                         </a>
                       </strong>
                       ({{ subcomment.created_time|date:"Y-m-d, G:i:s" }})
@@ -421,11 +427,13 @@
             $('#comment-reply-who-tip').text('');
             $('#comment-reply-who-tip').hide();
             $('#reply_comment_id').val(0);
+            //隐藏为空回复
+            $('#comment-is-empty').hide();
             // //更新程序计数
-            // var comment_num_info = data['user_num'] + ' 人参与 | ' + data['comment_num'] + ' 条评论';
-            // console.log(comment_num_info)
-            // $('.comment-tips').text(comment_num_info)
-            // $('#seeComment').text('评论 ' + data['comment_num'])
+            var comment_num_info = data['user_num'] + ' 人参与 | ' + data['comment_num'] + ' 条评论';
+            console.log(comment_num_info)
+            $('.comment-tips').text(comment_num_info)
+            $('#seeComment').text('评论 ' + data['comment_num'])
           }
           else{
             $('#comment_error').text(data['message']);

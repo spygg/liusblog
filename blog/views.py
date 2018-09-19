@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import BlogType, ReadNumber, Blog, Bulletin
+from .models import BlogType, Blog, Bulletin
+# from .models import ReadNumber
 from django.db.models import Count
-from django.db.models import Q
+# from django.db.models import Q
 from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from .forms import LoginForm, RegisterForm, ResetPassWdForm
@@ -11,12 +12,12 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
 import re
-from urllib.request import unquote
+# from urllib.request import unquote
 import urllib.parse
-from comment.models import Comment
-from comment.forms import CommentForm
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+# from comment.models import Comment
+# from comment.forms import CommentForm
+# from django.contrib.contenttypes.fields import GenericForeignKey
+# from django.contrib.contenttypes.models import ContentType
 import random
 import string
 
@@ -108,8 +109,8 @@ def article_list(request):
 def article_detail(request):
     context = {}
     blog_type = ''
-    year = ''
-    month = ''
+    # year = ''
+    # month = ''
 
     pre_url = request.META.get('HTTP_REFERER', '')
     id = request.GET.get('id', '0')
@@ -122,15 +123,15 @@ def article_detail(request):
     if result:
         blog_type = result.group('blog_type')
 
-    pattern = re.compile(r"year=(?P<year>[0-9][0-9][0-9][0-9])");
-    result = re.search(pattern, pre_url)
-    if result:
-        year = result.group('year')
+    # pattern = re.compile(r"year=(?P<year>[0-9][0-9][0-9][0-9])");
+    # result = re.search(pattern, pre_url)
+    # if result:
+    #     year = result.group('year')
 
-    pattern = re.compile(r"month=(?P<month>[0-9][0-9])");
-    result = re.search(pattern, pre_url)
-    if result:
-        month = result.group('month')
+    # pattern = re.compile(r"month=(?P<month>[0-9][0-9])");
+    # result = re.search(pattern, pre_url)
+    # if result:
+    #     month = result.group('month')
    
     #阅读计数
     is_read = request.COOKIES.get('aritcle_%s' % id)    
@@ -152,18 +153,6 @@ def article_detail(request):
     context['blog_types'] = BlogType.objects.all()
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
-
-    #评论内容区域
-    blog_content_type = ContentType.objects.get_for_model(blog)
-    # content_type=blog_content_type, 
-    comments = Comment.objects.filter(object_id = blog.pk, content_type = blog_content_type)
-    context['comments'] = comments
-    context['commentForm'] = CommentForm(initial = {
-        'content_type':blog_content_type.model,
-        'object_id':blog.pk,
-        'reply_comment_id': 0
-        })
-    context['blog_content_type'] = blog_content_type
 
     response = render(request, 'article_detail.html', context) 
     response.set_cookie('aritcle_%s' % id, 'YES', max_age = 3600)

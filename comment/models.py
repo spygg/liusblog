@@ -44,14 +44,6 @@ class Comment(models.Model):
     # 回复谁的ID
     #reply_to_id = models.IntegerField(default=0)
 
-    def get_subcomments(self):
-        sub_comments = Comment.objects.filter(root_id=self.id)
-        return sub_comments.order_by('created_time')
-
-    def get_reply(self):
-        reply = Comment.objects.get(id=self.object_id)
-        return reply
-
     # root = models.ForeignKey(
     #     'self', related_name='root_comment', null=True, on_delete=models.CASCADE)
     # parent = models.ForeignKey(
