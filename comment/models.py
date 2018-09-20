@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
-from ckeditor.fields import RichTextField
-from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
+# from ckeditor.fields import RichTextField
+# from django.utils import timezone
+# from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
-from django.db.models.query import QuerySet
+# from django.db.models import Q
+# from django.db.models.query import QuerySet
 
 # 递归查找所有子评论
 # def do_recursive_find(comment_list, parent_id, level, result_list):
@@ -17,10 +17,10 @@ from django.db.models.query import QuerySet
 #             do_recursive_find(comment_list, comment.id, level, result_list)
 
 # 回复分两种情况:
-# 1.回复博客,直接设置object_id为"博客id"和content_type,root_id为0
+# 1.回复博客,直接设置object_id为"博客id"和content_type,top_comment_id为0
 # 2.回复评论也分两种情况:
-# ①.回复顶级评论,设置root_id为被回复者的"评论id",object_id也一样
-# ②.回复非顶级评论,root_id设置为被回复者的根id(向上追溯),object_id为被回复者的"评论ID"
+# ①.回复顶级评论,设置top_comment_id为被回复者的"评论id",object_id也一样
+# ②.回复非顶级评论,top_comment_id设置为被回复者的根id(向上追溯),object_id为被回复者的"评论ID"
 
 
 class Comment(models.Model):
@@ -40,7 +40,8 @@ class Comment(models.Model):
     # 某个子评论的根ID等于本博客评论的ID
     # 1.为0时说明是评论博客
     # 2.非0则需对应某条博客根评论的id
-    root_id = models.IntegerField(default=0)
+    top_comment_id = models.IntegerField(default=0)
+    root_object_id = models.IntegerField(default=0)
     # 回复谁的ID
     #reply_to_id = models.IntegerField(default=0)
 
@@ -52,7 +53,7 @@ class Comment(models.Model):
     #     User, related_name="replies", null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "<Comment, %s, %d, %d, %d>" % (self.content, self.id, self.object_id, self.root_id)
+        return "<Comment, %s, %d, %d, %d>" % (self.content, self.id, self.object_id, self.top_comment_id)
 
     class Meta:
         ordering = ['-created_time']

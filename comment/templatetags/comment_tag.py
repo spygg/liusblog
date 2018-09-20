@@ -2,8 +2,9 @@ from django import template
 # from ..models import Comment
 from comment.models import Comment
 from comment.forms import CommentForm
-from django.contrib.contenttypes.fields import GenericForeignKey
+# from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count
 
 register = template.Library()
 
@@ -17,30 +18,37 @@ def get_top_comments(obj):
 
 
 @register.simple_tag
-def get_comment_number(obj):
+def get_subcomments(obj):
     content_type = ContentType.objects.get_for_model(obj)
-    return 'hah'
+    sub_comments = Comment.objects.filter(
+        content_type=content_type, top_comment_id=obj.id).order_by('created_time')
+
+    return sub_comments
+
+
+@register.simple_tag
+def get_comment_number(obj):
+    # comment_numbers = 0
+    # for comment in get_top_comments(obj):
+    #     comment_numbers = comment_numbers + len(get_subcomments(comment)) + 1
+    comment_numbers = Comment.objects.filter(root_object_id=obj.pk).count()
+    return comment_numbers
 
 
 @register.simple_tag
 def get_comment_user_number(obj):
-    pass
+    user_numbers = Comment.objects.filter(root_object_id=obj.pk).annotate(blog_count=Count('user'))
+    return user_numbers
 
 
 @register.simple_tag
 def get_comment_form(obj):
     content_type = ContentType.objects.get_for_model(obj)
     commentForm = CommentForm(initial={
-                              'content_type': content_type.model,
-                              'object_id': obj.pk,
-                              'reply_comment_id': 0})
+        'content_type': content_type.model,
+        'object_id': obj.pk,
+        'reply_comment_id': 0})
     return commentForm
-
-
-@register.simple_tag
-def get_subcomments(obj):
-    sub_comments = Comment.objects.filter(root_id=obj.id)
-    return sub_comments.order_by('created_time')
 
 
 @register.simple_tag

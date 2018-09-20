@@ -133,6 +133,8 @@
     </span>
   </div>
 
+  {% get_comment_user_number article as number%}
+  {{ number.last.blog_count }}
   <!-- 用户登录区域 -->
   <div class="well comment-area clearfix">
     <div class="comment-commit-area">
@@ -401,19 +403,19 @@
             var reply_div_id;
 
             //直接评论博客
-            if(data['root_id'] == '0'){
+            if(data['top_comment_id'] == '0'){
               reply_name = '本文';
               reply_div_id = data['pk']
             }
             else{
               reply_name = data['reply_username'];
-              reply_div_id = data['root_id'];
+              reply_div_id = data['top_comment_id'];
             }
 
             var coment_html = formatter_reply_string(data['username'], data['created_time'], data['content'], data['pk'], reply_name, reply_div_id);
 
             // 插入博客的评论
-            if(data['root_id'] == '0'){
+            if(data['top_comment_id'] == '0'){
               $("#comment_list").prepend(coment_html);
             }
             else{//插入评论的评论

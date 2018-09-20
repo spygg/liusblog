@@ -19,7 +19,8 @@ def comment(request):
 
         # 获取对象
         comm.content_object = commentForm.cleaned_data['content_object']
-        comm.root_id = commentForm.cleaned_data['root_id']
+        comm.top_comment_id = commentForm.cleaned_data['top_comment_id']
+        comm.root_object_id = commentForm.cleaned_data['object_id']
         comm.save()
 
         data['status'] = 'SUCCESS'
@@ -27,9 +28,13 @@ def comment(request):
         data['created_time'] = comm.created_time.strftime(
             '%Y-%m-%d, %H:%M:%S')
         data['content'] = comm.content
-        data['root_id'] = comm.root_id
+        data['top_comment_id'] = comm.top_comment_id
         data['pk'] = comm.pk
-        data['reply_username'] = comm.get_reply().user.username
+        try:
+            data['reply_username'] = Comment.objects.get(
+                id=comm.object_id).user.username
+        except:
+            data['reply_username'] = ''
         # data['content_type'] = commentForm.cleaned_data['content_type']
         # data['user_num'] = 33
         # data['comment_num'] = 69
