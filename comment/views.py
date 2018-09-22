@@ -5,6 +5,8 @@ from comment.forms import CommentForm
 from .models import Comment
 # from django.urls import reverse
 from django.http import JsonResponse
+from comment.templatetags.comment_tag import get_comment_number, get_comment_user_number
+from django.contrib.contenttypes.models import ContentType
 
 
 def comment(request):
@@ -35,10 +37,15 @@ def comment(request):
                 id=comm.object_id).user.username
         except:
             data['reply_username'] = ''
-        # data['content_type'] = commentForm.cleaned_data['content_type']
-        # data['user_num'] = 33
-        # data['comment_num'] = 69
-        # return redirect(refer)
+
+        # 获取评论文章
+        content_type = commentForm.cleaned_data['content_type']
+        object_id = commentForm.cleaned_data['object_id']
+        model_class = ContentType.objects.get(model=content_type).model_class()
+        model_obj = model_class.objects.get(pk=object_id)
+
+        data['comment_user_number'] = get_comment_user_number(model_obj)
+        data['comment_number'] = get_comment_number(model_obj)
     else:
         data['status'] = 'ERROR'
         data['message'] = list(commentForm.errors.values())[0]

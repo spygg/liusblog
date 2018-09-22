@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+<!-- 加载评论tag -->
+{% load comment_tag %}
+
 
 {% block css %}
     <link rel="stylesheet" type="text/css" href="/static/css/index.css">
@@ -151,7 +154,7 @@
                     
                       <i class="fa fa-comments">
                       </i>
-                      33
+                      {% get_comment_number article %}
                       {# 评论数 #}
                       
                   </span>

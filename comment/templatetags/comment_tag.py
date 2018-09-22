@@ -4,7 +4,7 @@ from comment.models import Comment
 from comment.forms import CommentForm
 # from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Count
+# from django.db.models import Count
 
 register = template.Library()
 
@@ -20,6 +20,7 @@ def get_top_comments(obj):
 @register.simple_tag
 def get_subcomments(obj):
     content_type = ContentType.objects.get_for_model(obj)
+    print('content_type: ', content_type, type(content_type))
     sub_comments = Comment.objects.filter(
         content_type=content_type, top_comment_id=obj.id).order_by('created_time')
 
@@ -37,8 +38,14 @@ def get_comment_number(obj):
 
 @register.simple_tag
 def get_comment_user_number(obj):
-    user_numbers = Comment.objects.filter(root_object_id=obj.pk).annotate(blog_count=Count('user'))
-    return user_numbers
+    comments = Comment.objects.filter(
+        root_object_id=obj.pk)
+
+    user_set = set()
+    for comment in comments:
+        user_set.add(comment.user)
+
+    return len(user_set)
 
 
 @register.simple_tag
