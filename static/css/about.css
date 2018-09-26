@@ -1280,16 +1280,21 @@ div.paginate-container li:nth-last-child(2) a:after {
 .sponsor-qr-code img{
     max-width: 100%;
 	max-height: 400px;
+
+	clear: both; 
+	display: block; 
+	margin:auto; 
 }
 
 .sponsor-qr-code p{
     padding-top: 2px;
     margin-bottom: 0px;
     text-align: center;
+    font-size: 1.2em;
 }
 
 .aboutme-area{
-	font-size: 1.5em;
+	font-size: 1.4em;
 	line-height: 1.8em;
 	margin-left: 30px;
 }
