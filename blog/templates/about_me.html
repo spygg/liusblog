@@ -2,14 +2,150 @@
 {% extends 'base.html' %}
 
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="/static/css/article_detail.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/static/css/article_detail.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/about.css">
 {% endblock %}
 
 {% block js %}
     
 {% endblock %}
 
+ {% block main_area %}
+    <div id="profile-cover" class="cover shallow-bg img-responsive">
+            <div id="profile-namecard" class="profile-wrapper wrapper-light">
+                <div id="my-pic" class="profile-col profile-col-1">
+                    <img id="profile-avatar" src="/static/imgs/self-portrait/me.jpg" alt="Me" class="circle-img border-dark"/>
+                </div>
+                <div id="my-contact" class="profile-col profile-col-2">
+                    <div id="my-name" class="text-grey-dark">
+                        spygg
+                    </div>
+                    <div id="my-title" class="text-grey">
+                        做爱做的事,交配交的人<br>一个小码农
+                    </div>
+                    <div id="my-email" class="text-grey-light">
+                        
+                    </div>
+                    <div class="social-media">
+                        <a href="https://github.com/spygg" class="icon-button github">
+                            <i class="fa fa-github icon-github"></i>
+                        </a>
 
+                        <a href="#" class="icon-button facebook">
+                            <i class="fa fa-facebook icon-facebook"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="my-desc" class="profile-col profile-col-2 hide">
+                    <div id="my-desc-title">
+                        Just for fun.
+                    </div>
+                    <div id="my-desc-content">
+                        技术宅<br>苦逼的小码农<br>
+                        <em class='text-grey-bright'>技术引领人生</em>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div class="aboutme-area">
+                <h2>关于博客</h2>
+
+                <ul class="aboutme-ul">
+                    <li>使用Django Bootstrap Html CSS Javascript开发</li>
+                    <li>借鉴很多人的劳动成果,在此一并感谢!</li>
+                    <li>
+                        本页面参考Github地址：<a href="https://bigballon.github.io/" target="_blank">https://bigballon.github.io/</a>
+                    </li>
+                    
+                </ul>
+                <hr>
+                <h2>关于博主</h2>
+
+                <ul class="aboutme-ul">
+                    <li>人生苦短，我用 Python</li>
+                    <li>优雅高效,我用C语言</li>
+                    <li>逆向破解,我用汇编</li>
+                    <li>跨平台开发,我用Qt</li>
+                    <li>牛逼闪闪嘛,还是要看HTML!</li>
+                    <li>博主 Github 地址：<a href="https://github.com/spygg" target="_blank">https://github.com/spygg</a></li>
+                    <li>联系邮箱：liushidc@163.com</li>
+                </ul>
+            </div>
+            <hr>
+            <div class="aboutme-area">
+                <h2>关于打赏</h2>
+
+                <ul class="aboutme-ul">
+                     <li>看到漂亮的页面心痒痒也整了一个,凑合用吧</li>
+                     <li>不动手不知道页面的难处,一个小功能都要调试半天,希望对你有帮助</li>
+                     <li>如果你感觉有用的话,大胆的赏赐吧,(*^__^*) </li>
+                </ul>
+            </div>
+            <div class="container sponsor-qr-code">
+                 <div class="col-xs-6">
+                      <img src="/static/imgs/sponsor/weixincode.jpg" alt="">
+                      <p>微信赞助</p>
+                    </div>
+                    <div class="col-xs-6">
+                      <img src="/static/imgs/sponsor/zhifubaocode.jpg" alt="">
+                      <p>支付宝打赏</p>
+                    </div>
+                  </div>
+            </div>
+ {% endblock %}
+
+<!-- 页内javascript区域 -->
+{% block scriptextends %}
+    <script type="text/javascript">
+
+        //$(function(){
+        //  $.scrolltotop({
+        //    offsetx:0,
+        //    offsety:60,
+        //    scrollduration:200
+        //  });
+        //})
+
+        function deepFeature()
+        {
+            $('#profile-avatar').attr('src', '/static/imgs/self-portrait/deep-me.jpg');
+            $('#profile-avatar').removeClass('border-dark');
+            $('#profile-avatar').addClass('border-bright');
+
+            $('#profile-cover').removeClass('shallow-bg');
+            $('#profile-cover').addClass('deep-bg');
+
+            $('#profile-namecard').removeClass('wrapper-light');
+            $('#profile-namecard').addClass('wrapper-dark');
+
+            $('#my-desc').removeClass('hide');
+            $('#my-contact').addClass('hide');    
+            // console.log('Move in now...');
+        }
+
+        function shallowFeature()
+        {
+            $('#profile-avatar').attr('src', '/static/imgs/self-portrait/me.jpg');
+            $('#profile-avatar').removeClass('border-bright');
+            $('#profile-avatar').addClass('border-dark');
+
+            $('#profile-cover').removeClass('deep-bg');
+            $('#profile-cover').addClass('shallow-bg');
+
+            $('#profile-namecard').removeClass('wrapper-dark');
+            $('#profile-namecard').addClass('wrapper-light');
+
+            $('#my-contact').removeClass('hide');
+            $('#my-desc').addClass('hide');
+            // console.log('Move out now...');
+        }
+
+        $(function() { 
+            $('#my-pic').hover(deepFeature, shallowFeature);
+        })
+    </script>
+{% endblock %}
 
 <!DOCTYPE html>
 <html>

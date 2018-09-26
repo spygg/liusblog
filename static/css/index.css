@@ -138,3 +138,12 @@ div.scroll-wrap{
 .popover-qr-code:hover{
     transform: scale(1.1);
 }
+
+
+.carousel-caption{
+    font-size: 30px;
+}
+
+.carousel-article-title{
+    color: #fff;
+}

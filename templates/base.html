@@ -57,15 +57,42 @@
             {% endif %}
               <a href="{% url 'home' %}">{# <span class="glyphicon glyphicon-home"></span> #}首页</a>
             </li>
-            
+         
             {% for blog_catagroy in blog_types %}
               {% if blog_catagroy.type_name == blog_type %}  
-                <li class="active">
+                <li class="dropdown active">
               {% else %}
-                <li>
+                {% if parent_name == blog_catagroy.type_name %}
+                  <li class="dropdown active">
+                {% else %}
+                  <li class="dropdown">
+                {% endif %}
               {% endif %}
 
-                <a href="{% url 'article_list' %}?blog_type={{ blog_catagroy }}"> {{ blog_catagroy }} </a>
+                {% if blog_catagroy.get_sub_types %}
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                    {{ blog_catagroy }} 
+                    <span class="caret"></span>
+                  </a>
+                {% else %}
+                  <a href="{% url 'article_list' %}?blog_type={{ blog_catagroy }}"> 
+                    {{ blog_catagroy }} 
+                  </a>
+                {% endif %}
+
+                <ul class="dropdown-menu">
+                  {% for sub_blog_type in blog_catagroy.get_sub_types %}
+                    {% if sub_blog_type.type_name == blog_type %}  
+                      <li class="active">
+                    {% else %}
+                      <li>
+                    {% endif %}
+                      <a href="{% url 'article_list' %}?blog_type={{ sub_blog_type }}">
+                        {{ sub_blog_type }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
               </li>
             {% endfor %}
             
@@ -174,6 +201,12 @@
     </div>
     <!-- 网站脚注结束 -->
     {% block scriptextends %}
+      <script type="text/javascript">
+        function setparentActive(){
+          alert('hdd')
+          $('#parent_catagroy').addClass('active');
+        }
+      </script>
     {% endblock %}
 </body>
 </html>

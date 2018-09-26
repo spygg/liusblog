@@ -62,24 +62,48 @@
       <div id="carousel-generic" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-          <li data-target="#carousel-generic" data-slide-to="0" class="active"></li>
-          <li data-target="#carousel-generic" data-slide-to="1"></li>
-          <li data-target="#carousel-generic" data-slide-to="2"></li>
+          {% for blog_type in blog_types %}
+            {% if  forloop.first %}
+              <li data-target="#carousel-generic" data-slide-to="{{ forloop.counter0 }}" class="active"></li>
+            {% else %}
+              <li data-target="#carousel-generic" data-slide-to="{{ forloop.counter0 }}"></li>
+            {% endif %}
+          {% endfor %}
         </ol>
 
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
-          <div class="item active">
-            <img src="/static/imgs/bsblog.png">
-          </div>
-          <div class="item">
-            <img src="/static/imgs/jiandan.png">
-          </div>
-          <div class="item">
-            <img src="/static/imgs/virtualenv.png">
-            <div class="carousel-caption">
+          
+          {% for blog_type in blog_types %}
+            {% if  forloop.first %}
+              <div class="item active">
+            {% else %}
+              <div class="item">
+            {% endif %}
+              {% if blog_type.get_first_article_id %}
+                <a href="{% url 'article_detail' %}?id={{ blog_type.get_first_article_id }}&blog_type={{ blog_type }}">
+                  <img src="/static/imgs/{{ blog_type }}.jpg">
+                </a>
+              {% else %}
+                <a href="{% url 'article_detail' %}?id={{ article_list.object_list.first.id }}&blog_type={{ blog_type }}">
+                  <img src="/static/imgs/{{ blog_type }}.jpg" alt="">
+                </a>
+              {% endif %}
+              <div class="carousel-caption">
+                {% if blog_type.get_first_article_id %}
+                  <a href="{% url 'article_detail' %}?id={{ blog_type.get_first_article_id }}&blog_type={{ blog_type }}">
+                    <p class="carousel-article-title">文章标题文章标题文章标题文章标题文章标题文章标题文章标题文章标题</p>
+                  </a>
+                {% else %}
+                  <a href="{% url 'article_detail' %}?id={{ article_list.object_list.first.id }}&blog_type={{ blog_type }}">
+                    <p class="carousel-article-title">文章标题文章标题文章标题文章标题文章标题文章标题文章标题文章标题</p>
+                  </a>
+                {% endif %}
+
+                
+              </div>
             </div>
-          </div>
+          {% endfor %}
         </div>
 
         <!-- Controls -->

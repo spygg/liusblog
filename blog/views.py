@@ -69,9 +69,11 @@ def article_list(request):
     blogs = Paginator(blogs_all, 5)
     # 使用get_age()函数可以自动过滤超限页码
     context['article_list'] = blogs.get_page(page_id)
+    print(dir(context['article_list'].object_list))
     context['page_nums'] = blogs.page_range
     context['current_page'] = page_id
-    context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))
+    # context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     context['blog_type'] = blog_type
     context['year'] = year
     context['month'] = month
@@ -84,6 +86,17 @@ def article_list(request):
             created_time__year=blog_date.year,
             created_time__month=blog_date.month).\
             count()
+
+    # 为了父节点高亮
+    try:
+        context['parent_name'] = BlogType.objects.get(
+            type_name=blog_type).get_parent_name()
+    except:
+        pass
+
+    for blog_type in context['blog_types']:
+        context[blog_type.type_name +
+                '_first'] = Blog.objects.filter(blog_type__type_name=blog_type).first()
 
     context['blog_dates'] = blog_dates
     context['bulletins'] = Bulletin.objects.all()
@@ -139,7 +152,7 @@ def article_detail(request):
 
     context['article'] = blog
     context['blog_type'] = blog_type
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     context['prev_article'] = blog_prev
     context['next_article'] = blog_next
 
@@ -151,7 +164,7 @@ def article_detail(request):
 def about_me(request):
     context = {}
     context['blog_type'] = 'about'
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     return render(request, 'about_me.html', context)
 
 
@@ -178,7 +191,7 @@ def login(request):
         loginForm = LoginForm()
     context = {}
     context['loginForm'] = loginForm
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
 
     return render(request, 'login.html', context)
 
@@ -205,13 +218,13 @@ def register(request):
 
     context = {}
     context['registerForm'] = registerForm
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     return render(request, 'register.html', context)
 
 
 def userinfo(request):
     context = {}
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     username = request.GET.get('username', '')
 
     if username:
@@ -224,7 +237,7 @@ def userinfo(request):
 
 def bindemail(request):
     context = {}
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
 
     return render(request, 'userinfo.html', context)
 
@@ -278,5 +291,5 @@ def resetpasswd(request):
     context = {}
     context['resetPassWdForm'] = resetPassWdForm
     context['info'] = info
-    context['blog_types'] = BlogType.objects.all()
+    context['blog_types'] = BlogType.objects.filter(parent_id=0)
     return render(request, 'resetpasswd.html', context)
