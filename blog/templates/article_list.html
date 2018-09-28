@@ -335,17 +335,21 @@
         <span class="panel-heading-title">文章分类</span>
       </div>
 
-      <ul class="list-group">
+      <ul class="list-group" id='list-group-article-types'>
         {% for blog_type in blog_types%}
-          <li class="list-group-item">
+          {% if forloop.counter0 < 5%}
+            <li class="list-group-item">
+          {% else %}
+            <li class="list-group-item" style="display: none">
+          {% endif %}
             <a href="{% url 'article_list' %}?blog_type={{ blog_type }}"> {{ blog_type }} </a>
-            <span class="badge">{{ blog_type.blog_count }}篇</span>
-          </li>
+              <span class="badge">{{ blog_type.get_sub_ariticle_numbers }}篇</span>
+            </li>
         {% endfor %}
       </ul>
 
       <div class="panel-footer show-more">
-        <a href="javascript:void(0);" onclick="showmore()">
+        <a href="javascript:void(0);" onclick="showmore('list-group-article-types')">
           <span>展开</span>
           <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
@@ -359,9 +363,13 @@
       <div class="panel-heading">
         <span class="panel-heading-title">日期归档</span>
       </div>
-      <ul class="list-group">
+      <ul class="list-group" id='list-group-archive'>
         {% for blog_date, blog_count in blog_dates.items %}
-          <li class="list-group-item">
+          {% if forloop.counter0 < 5%}
+            <li class="list-group-item">
+          {% else %}
+            <li class="list-group-item" style="display: none">
+          {% endif %}
             <a href="{% url 'article_list' %}?year={{ blog_date|date:"Y" }}&month={{ blog_date|date:"m" }}">{{ blog_date|date:"Y年m月" }} </a>
             <span class="badge">{{ blog_count }}篇</span>
           </li>
@@ -369,7 +377,7 @@
       </ul>
       
       <div class="panel-footer show-more">
-        <a href="javascript:void(0);" onclick="showmore()">
+        <a href="javascript:void(0);" onclick="showmore('list-group-archive')">
           <span>展开</span>
           <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
@@ -382,13 +390,88 @@
     <div class="panel-heading">
       <span class="panel-heading-title">友情链接</span>
     </div>
-    <ul class="list-group">
-      <li class="list-group-item"><a target="_blank" href="http://yshblog.com/">杨世航blog</a></li>
+    <ul class="list-group" id='list-group-links'>
+      {% for friend_link in frend_links %}
+       {% if forloop.counter0 < 5%}
+          <li class="list-group-item">
+        {% else %}
+          <li class="list-group-item" style="display: none">
+        {% endif %}
+           <a target="_blank" href="{{ friend_link.net_link }}">{{ friend_link.net_name }}</a>
+         </li>
+      {% endfor %}
+<!--       <li class="list-group-item"><a target="_blank" href="http://yshblog.com/">杨世航blog</a></li>
       <li class="list-group-item"><a target="_blank" href="http://www.tendcode.com/">TendCode</a></li>
       <li class="list-group-item"><a target="_blank" href="https://www.zmrenwu.com/">追梦人物</a></li>
-      <li class="list-group-item"><a target="_blank" href="https://vmaig.com/">vmaig</a></li>
-      <li class="list-group-item"><a target="_blank" href=""></a></li>
+      <li class="list-group-item"><a target="_blank" href="https://vmaig.com/">vmaig</a></li> -->
     </ul>
+
+    <div class="panel-footer show-more">
+        <a href="javascript:void(0);" onclick="showmore('list-group-links')">
+          <span>展开</span>
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </a>
+      </div>
   </div>
   <!-- 友情链接 -->
+{% endblock %}
+
+
+{% block scriptextends %}
+  <script type="text/javascript">
+
+
+      function showmore(id){
+
+        // $("li").each(function(){
+        //     alert($(this).text())
+        // });
+
+        // if($(this).attr('expand') === undefined)
+        // {
+        //   $(this).css("overflow", "visible");
+        //   $(this).css("max-height", "800px");
+        // }
+        // else
+        // {
+        //   $(this).css("overflow", "hidden");
+        //   $(this).css("max-height", "130px");
+        // }
+  
+
+        // if ($(".list-group").css("overflow") === "hidden"){
+        //   $(".list-group").css("overflow", "visible");
+        //   $(".list-group").css("max-height", "800px");
+        // }
+        // else{
+        //   $(".list-group").css("overflow", "hidden");
+        //   $(".list-group").css("max-height", "180px");
+        // }
+        //list-group-article-types
+        var children= $('#' + id).children();
+        console.log('#' + id)
+        console.log(children.length)
+
+        if( $(children[children.length - 1]).css('display') == 'none'){
+          for(var i = 5; i < children.length; i++){
+            $(children[i]).css('display', 'block');
+          }
+        }
+        else{
+          for(var i = 5; i < children.length; i++){
+            $(children[i]).css('display', 'none');
+          }
+        }
+
+      
+      }
+
+
+      // $(function(){
+      //     showmore('list-group-article-types')
+      //     showmore('list-group-archive')
+      //   }
+      // )
+  </script>
+    
 {% endblock %}

@@ -5,6 +5,14 @@ from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.exceptions import ObjectDoesNotExist
 
 
+class FriendLinks(models.Model):
+    net_name = models.CharField(max_length=50)
+    net_link = models.URLField()
+
+    def __str__(self):
+        return self.net_name
+
+
 class UsrInfo(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name='邮箱绑定')
@@ -43,6 +51,15 @@ class BlogType(models.Model):
             return self.blog_set.get_queryset().first().id
         except:
             return 0
+
+    def get_sub_ariticle_numbers(self):
+        sub_types = BlogType.objects.filter(parent_id=self.id)
+        numbers = 0
+        for sub_type in sub_types:
+            pass
+            numbers += sub_type.blog_set.count()
+
+        return numbers
 
     def __str__(self):
         return self.type_name

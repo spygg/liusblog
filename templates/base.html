@@ -141,6 +141,9 @@
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'userinfo' %}?username={{ request.user.username }}">个人资料</a></li>
                     <li><a href="#">消息</a></li>
+                    {% if request.user.is_superuser %}
+                      <li><a href="{% url 'admin:index' %}">系统管理</a></li>
+                    {% endif %}
                     <li role="separator" class="divider"></li>
                     <li><a href="{% url 'logout' %}">退出</a></li>
                   </ul>

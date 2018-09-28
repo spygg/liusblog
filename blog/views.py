@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import BlogType, Blog, Bulletin
+from .models import BlogType, Blog, Bulletin, FriendLinks
 # from .models import ReadNumber
 from django.db.models import Count
 # from django.db.models import Q
@@ -100,7 +100,7 @@ def article_list(request):
 
     context['blog_dates'] = blog_dates
     context['bulletins'] = Bulletin.objects.all()
-
+    context['frend_links'] = FriendLinks.objects.all()
     return render(request, 'article_list.html', context)
 
 

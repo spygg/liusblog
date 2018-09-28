@@ -147,3 +147,8 @@ div.scroll-wrap{
 .carousel-article-title{
     color: #fff;
 }
+
+
+.list-group-item{
+    margin-bottom: -6px;
+}
