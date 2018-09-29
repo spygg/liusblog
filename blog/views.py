@@ -2,10 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from .models import BlogType, Blog, Bulletin, FriendLinks
 # from .models import ReadNumber
-from django.db.models import Count
+# from django.db.models import Count
 # from django.db.models import Q
 from django.contrib import auth
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from .forms import LoginForm, RegisterForm, ResetPassWdForm
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -13,7 +13,7 @@ from django.conf import settings
 from django.urls import reverse
 import re
 # from urllib.request import unquote
-import urllib.parse
+# import urllib.parse
 # from comment.models import Comment
 # from comment.forms import CommentForm
 # from django.contrib.contenttypes.fields import GenericForeignKey
@@ -245,16 +245,16 @@ def bindemail(request):
 def verify(request):
     data = {}
     code = ''.join(random.sample(string.ascii_letters + string.digits, 4))
-#    print(code)
     email = request.GET.get('email', '')
     request.session['verify_code'] = code
-
+    # '<div>验证码: <strong>%s</strong></div><div>网站地址: <a  target="_blank" href="http://spygg.pythonanywhere.com">http://spygg.pythonanywhere.com</a></div>' % (
+    # code, ),
     data['status'] = "ERROR"
     if email.find('@') != -1:
         ok = send_mail(
-            subject='注册验证,不要回复本邮件!',
-            message='',
-            html_message='<div>验证码: <strong>%s</strong></div><div>网站地址: <a  target="_blank" href="http://spygg.pythonanywhere.com">http://spygg.pythonanywhere.com</a></div>' % (
+            subject='验证码',
+            message='验证码',
+            html_message='<div>代码: <strong>%s</strong></div><div>网站地址: <a  target="_blank" href="http://spygg.pythonanywhere.com">http://spygg.pythonanywhere.com</a></div>' % (
                 code, ),
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[email, ],
